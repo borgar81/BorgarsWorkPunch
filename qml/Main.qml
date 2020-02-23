@@ -17,25 +17,34 @@ Felgo.App
       {
          title: "Home"
          icon: Felgo.IconType.home
-         HomePage
+         Felgo.NavigationStack
          {
+            HomePage
+            {
 
+            }
          }
       }
       Felgo.NavigationItem
       {
          title: "Edit Projects"
          icon: Felgo.IconType.edit
-         EditProjectsPage
+         Felgo.NavigationStack
          {
+            EditProjectsPage
+            {
+            }
          }
       }
       Felgo.NavigationItem
       {
          title: "Report"
          icon: Felgo.IconType.edit
-         GenerateReportPage
+         Felgo.NavigationStack
          {
+            GenerateReportPage
+            {
+            }
          }
       }
    }
