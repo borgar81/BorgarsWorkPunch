@@ -18,8 +18,8 @@ Felgo.Page
    QtQuickControls2.ButtonGroup {id: punchButtonGroup }
 
 
-   QtQuickControls2.Button
-   //Felgo.AppButton
+   //QtQuickControls2.Button
+   Felgo.AppButton
    {
       text: "Punch-In"
       flat: false
@@ -29,8 +29,8 @@ Felgo.Page
       anchors.bottom: parent.bottom
    }
 
-   //Felgo.AppButton
-   QtQuickControls2.Button
+   Felgo.AppButton
+   //QtQuickControls2.Button
    {
       text: "Punch-Out"
       flat: false
