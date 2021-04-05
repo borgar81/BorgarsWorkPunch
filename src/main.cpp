@@ -1,15 +1,33 @@
 #include <QApplication>
 #include <FelgoApplication>
+#include <QQmlContext>
 
 #include <QQmlApplicationEngine>
 
+
+#include "FirebaseAuthHandler.h"
+
 // uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 //#include <FelgoLiveClient>
+
+// Firebase API key: AIzaSyCaK51HBaXFPKlMOd3-SxgQVAeFt9ygFXE
+
+const QString API_KEY = "AIzaSyCaK51HBaXFPKlMOd3-SxgQVAeFt9ygFXE";
 
 
 int main(int argc, char *argv[])
 {
    QApplication app(argc, argv);
+
+   QCoreApplication::setApplicationName("BorgarsWorkPunch");
+   QCoreApplication::setOrganizationName("BorgarSoft");
+   QCoreApplication::setOrganizationDomain("org.borgarsoft");
+
+   FirebaseAuthHandler authHandler;
+   authHandler.setAPIKey(API_KEY);
+
+   //authHandler.signUserIn("Borgar.Ovsthus@technipfmc.com", "MyPassword");
+
    FelgoApplication felgo;
 
    // Use platform-specific fonts instead of Felgo's default font
@@ -17,6 +35,8 @@ int main(int argc, char *argv[])
 
    QQmlApplicationEngine engine;
    felgo.initialize(&engine);
+
+   engine.rootContext()->setContextProperty("authHandler", &authHandler);
 
    // Set an optional license key from project file
    // This does not work if using Felgo Live, only for Felgo Cloud Builds and local builds

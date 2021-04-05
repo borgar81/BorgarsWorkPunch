@@ -12,7 +12,6 @@ Felgo.App
 
    Felgo.Navigation
    {
-
       Felgo.NavigationItem
       {
          title: "Home"
@@ -48,4 +47,10 @@ Felgo.App
          }
       }
    }
+
+   SignInPage
+   {
+      visible: authHandler.localID.length == 0
+   }
+
 }

@@ -1,5 +1,5 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.0 as QtQuickControls2
+import QtQuick.Controls 2.15 as QtQuickControls2
 import Felgo 3.0 as Felgo
 
 Felgo.Page
@@ -15,29 +15,50 @@ Felgo.Page
       anchors.topMargin: 10
    }
 
-   QtQuickControls2.ButtonGroup {id: punchButtonGroup }
-
-
    //QtQuickControls2.Button
    Felgo.AppButton
    {
+      id: punchInButton
       text: "Punch-In"
+      //backgroundColor: Qt.blue
+      backgroundColor: checked ? "darkgreen" : Felgo.Theme.appButton.backgroundColor
+      textColor: checked ? "white" : Felgo.Theme.appButton.textColor
       flat: false
+      checked: false
       checkable: true
-      QtQuickControls2.ButtonGroup.group: punchButtonGroup
       anchors.left: parent.left
       anchors.bottom: parent.bottom
+      onClicked:
+      {
+         authHandler.writeSomething();
+
+         if (!checked)
+         {
+            checked = true
+            punchOutButton.checked = false
+         }
+      }
    }
 
    Felgo.AppButton
    //QtQuickControls2.Button
    {
+      id: punchOutButton
       text: "Punch-Out"
+      backgroundColor: checked ? "red" : Felgo.Theme.appButton.backgroundColor
+      textColor: checked ? "white" : Felgo.Theme.appButton.textColor
       flat: false
       checkable: true
       checked: true
-      QtQuickControls2.ButtonGroup.group: punchButtonGroup
       anchors.right: parent.right
       anchors.bottom: parent.bottom
+      onClicked:
+      {
+         if (!checked)
+         {
+            checked = true
+            punchInButton.checked = false
+         }
+      }
    }
 }

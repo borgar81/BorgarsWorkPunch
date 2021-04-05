@@ -38,7 +38,8 @@ RESOURCES += #    resources.qrc # uncomment for publishing
 
 
 # The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += src/main.cpp
+SOURCES += src/main.cpp \
+   src/FirebaseAuthHandler.cpp
 
 
 android {
@@ -62,4 +63,8 @@ macx {
 DISTFILES += \
    qml/EditHomePage.qml \
    qml/EditProjectsPage.qml \
-   qml/GenerateReport.qml \
+   qml/GenerateReport.qml \ \
+   qml/SignInPage.qml
+
+HEADERS += \
+   src/FirebaseAuthHandler.h
