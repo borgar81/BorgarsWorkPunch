@@ -26,7 +26,7 @@ Felgo.App
       }
       Felgo.NavigationItem
       {
-         title: "Edit Projects"
+         title: "Projects"
          icon: Felgo.IconType.edit
          Felgo.NavigationStack
          {

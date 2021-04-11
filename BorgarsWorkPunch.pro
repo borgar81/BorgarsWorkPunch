@@ -1,5 +1,6 @@
 # allows to add DEPLOYMENTFOLDERS and links to the Felgo library and QtCreator auto-completion
 CONFIG += felgo
+#CONFIG += felgo felgo-live
 
 # uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 # for the remaining steps to build a custom Live Code Reload app see here: https://felgo.com/custom-code-reload-app/
@@ -39,7 +40,8 @@ RESOURCES += #    resources.qrc # uncomment for publishing
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += src/main.cpp \
-   src/FirebaseAuthHandler.cpp
+   src/FirebaseAuthHandler.cpp \
+   src/FirebaseInterface.cpp
 
 
 android {
@@ -63,8 +65,10 @@ macx {
 DISTFILES += \
    qml/EditHomePage.qml \
    qml/EditProjectsPage.qml \
+   qml/EditSingleProjectPage.qml \
    qml/GenerateReport.qml \ \
    qml/SignInPage.qml
 
 HEADERS += \
-   src/FirebaseAuthHandler.h
+   src/FirebaseAuthHandler.h \
+   src/FirebaseInterface.h

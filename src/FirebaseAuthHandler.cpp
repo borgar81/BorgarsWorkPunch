@@ -17,7 +17,6 @@ FirebaseAuthHandler::FirebaseAuthHandler(QObject *parent)
    :QObject(parent)
 {
    mNetworkAccessManager = new QNetworkAccessManager(this);
-
    connect(mNetworkAccessManager, &QNetworkAccessManager::finished, this, &FirebaseAuthHandler::onReplyFinished);
 }
 
@@ -91,7 +90,7 @@ void FirebaseAuthHandler::parseSignUpResponse(const QByteArray &byteArray)
         qDebug() << "User signed in successfully!";
         qDebug() << "JSON Document: " << jsonDocument.object();
         //m_idToken = idToken;
-        //emit userSignedIn();
+        emit userSignedIn(mIDToken, mLocalID);
     }
     else
         qDebug() << "The response was: " << byteArray;
@@ -122,28 +121,4 @@ void FirebaseAuthHandler::setLocalID(const QString &localID)
       mLocalID = localID;
       emit localIDChanged();
    }
-}
-
-void FirebaseAuthHandler::writeSomething()
-{
-   QVariantMap variantMap;
-   variantMap["Name"] = "Gjøa";
-   variantMap["GMNumber"] = "GM5075";
-   variantMap["Activity"] = 110;
-   variantMap["Visible"] = true;
-
-   QJsonDocument jsonDoc = QJsonDocument::fromVariant(variantMap);
-
-
-   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/Projects.json?auth=%2")
-                  .arg(mLocalID)
-                  .arg(mIDToken);
-
-   QNetworkRequest request((QUrl(endPoint)));
-   request.setHeader( QNetworkRequest::ContentTypeHeader, QString( "application/json"));
-   mNetworkAccessManager->put(request, jsonDoc.toJson());
-
-   //tworkReply = m_networkAccessManager->get( QNetworkRequest(QUrl(endPoint)));
-   //connect( m_networkReply, &QNetworkReply::readyRead, this, &AuthHandler::networkReplyReadyRead );
-
 }

@@ -30,8 +30,6 @@ Felgo.Page
       anchors.bottom: parent.bottom
       onClicked:
       {
-         authHandler.writeSomething();
-
          if (!checked)
          {
             checked = true

@@ -18,7 +18,7 @@ class FirebaseAuthHandler : public QObject
    Q_PROPERTY(QString localID READ getLocalID WRITE setLocalID NOTIFY localIDChanged);
 
    Q_SIGNALS:
-      void userSignedIn();
+      void userSignedIn(const QString &idToken, const QString &localID);
       void localIDChanged();
 
    private:
@@ -45,7 +45,5 @@ class FirebaseAuthHandler : public QObject
       Q_INVOKABLE void signUserIn(const QString &emailAddress, const QString &password);
       QString getLocalID() const;
       void setLocalID(const QString &localID);
-
-      Q_INVOKABLE void writeSomething();
 };
 
