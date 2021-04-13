@@ -1,8 +1,12 @@
 import Felgo 3.0 as Felgo
 import QtQuick 2.0
+import QtQuick.Window 2.15
 
 Felgo.App
 {
+   x: (Qt.platform.os === "linux") ? ((Screen.desktopAvailableWidth / 3) - width/2) : 0
+   //storeWindowGeometry: false
+
    // You get free licenseKeys from https://felgo.com/licenseKey
    // With a licenseKey you can:
    //  * Publish your games & apps for the app stores

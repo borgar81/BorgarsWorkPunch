@@ -88,7 +88,7 @@ void FirebaseAuthHandler::parseSignUpResponse(const QByteArray &byteArray)
         setLocalID(localID);
 
         qDebug() << "User signed in successfully!";
-        qDebug() << "JSON Document: " << jsonDocument.object();
+        //qDebug() << "JSON Document: " << jsonDocument.object();
         //m_idToken = idToken;
         emit userSignedIn(mIDToken, mLocalID);
     }

@@ -1,5 +1,7 @@
 # allows to add DEPLOYMENTFOLDERS and links to the Felgo library and QtCreator auto-completion
 CONFIG += felgo
+QT += gui network
+
 #CONFIG += felgo felgo-live
 
 # uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
@@ -40,6 +42,7 @@ RESOURCES += #    resources.qrc # uncomment for publishing
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += src/main.cpp \
+   src/CppInterface.cpp \
    src/FirebaseAuthHandler.cpp \
    src/FirebaseInterface.cpp
 
@@ -70,5 +73,6 @@ DISTFILES += \
    qml/SignInPage.qml
 
 HEADERS += \
+   src/CppInterface.h \
    src/FirebaseAuthHandler.h \
    src/FirebaseInterface.h

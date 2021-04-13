@@ -8,11 +8,59 @@ Felgo.Page
 
    Felgo.AppText
    {
-      text: "Hours Today: " + "0:00"
+      id: todayCounterText
+      text: "Today: " + "0:00"
       anchors.left: parent.left
       anchors.top: parent.top
       anchors.leftMargin: 10
       anchors.topMargin: 10
+   }
+
+   Felgo.AppListView
+   {
+      id: projectListView
+      anchors.topMargin: dp(10)
+      anchors.top: todayCounterText.bottom
+      anchors.bottom: punchInButton.top
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+      delegate: Felgo.SimpleRow
+      {
+         text: model.Name
+         active: index == projectListView.currentIndex
+         /*{
+            if (firebaseInterface.activeProjectID.length == 0)
+            {
+               return index === 0
+            }
+            else
+            {
+               return firebaseInterface.activeProjectID === model.Id
+            }
+
+         }*/
+
+         detailText: (model.Type === "Network" ? "Network: " + model.NetworkOrOrder : "Order: " + model.NetworkOrOrder) + " " + "Activity: " + model.Activity
+         onSelected:
+         {
+            projectListView.currentIndex = index
+
+            if (firebaseInterface.isPunchedIn())
+            {
+               firebaseInterface.changeCurrentProject(model.Id)
+            }
+
+            //firebaseInterface.activeProjectID = model.Id
+         }
+      }
+
+      model: Felgo.JsonListModel
+      {
+         keyField: "Id"
+         fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity"]
+         source: firebaseInterface.projectList
+      }
    }
 
    //QtQuickControls2.Button
@@ -21,8 +69,8 @@ Felgo.Page
       id: punchInButton
       text: "Punch-In"
       //backgroundColor: Qt.blue
-      backgroundColor: checked ? "darkgreen" : Felgo.Theme.appButton.backgroundColor
-      textColor: checked ? "white" : Felgo.Theme.appButton.textColor
+      backgroundColor: checked ? Felgo.Theme.appButton.backgroundColor : "darkgreen"
+      textColor: checked ? Felgo.Theme.appButton.textColor : "white"
       flat: false
       checked: false
       checkable: true
@@ -34,6 +82,12 @@ Felgo.Page
          {
             checked = true
             punchOutButton.checked = false
+
+            var projectID = projectListView.model.get(projectListView.currentIndex).Id
+            if(projectID)
+            {
+               firebaseInterface.punchIn(projectID)
+            }
          }
       }
    }
@@ -43,8 +97,8 @@ Felgo.Page
    {
       id: punchOutButton
       text: "Punch-Out"
-      backgroundColor: checked ? "red" : Felgo.Theme.appButton.backgroundColor
-      textColor: checked ? "white" : Felgo.Theme.appButton.textColor
+      backgroundColor: checked ? Felgo.Theme.appButton.backgroundColor : "red"
+      textColor: checked ? Felgo.Theme.appButton.textColor : "white"
       flat: false
       checkable: true
       checked: true
@@ -56,6 +110,7 @@ Felgo.Page
          {
             checked = true
             punchInButton.checked = false
+            firebaseInterface.punchOut()
          }
       }
    }

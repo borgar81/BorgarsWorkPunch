@@ -7,6 +7,7 @@
 
 #include "FirebaseInterface.h"
 #include "FirebaseAuthHandler.h"
+#include "CppInterface.h"
 
 // uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 //#include <FelgoLiveClient>
@@ -41,8 +42,11 @@ int main(int argc, char *argv[])
    QQmlApplicationEngine engine;
    felgo.initialize(&engine);
 
+   CppInterface cppInterface;
+
    engine.rootContext()->setContextProperty("authHandler", &authHandler);
    engine.rootContext()->setContextProperty("firebaseInterface", &firebaseInterface);
+   engine.rootContext()->setContextProperty("cppInterface", &cppInterface);
 
    // Set an optional license key from project file
    // This does not work if using Felgo Live, only for Felgo Cloud Builds and local builds

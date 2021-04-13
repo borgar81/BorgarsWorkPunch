@@ -57,16 +57,6 @@ Felgo.ListPage
          fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity"]
          source: firebaseInterface.projectList
       }
-
-/*         model: [
-           { text: "Widget test",
-             detailText: "Some of the widgets available in Felgo AppSDK",
-             icon: Felgo.IconType.tablet },
-           { text: "Shown are:",
-             detailText: "ListPage, NavigationBar with different items, Switch",
-             icon: Felgo.IconType.question }
-         ]
-         */
    }
 
 
