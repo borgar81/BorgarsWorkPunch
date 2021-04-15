@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QTimer>
 
 // Forward declarations
 class QNetworkAccessManager;
@@ -19,25 +20,30 @@ class FirebaseAuthHandler : public QObject
 
    Q_SIGNALS:
       void userSignedIn(const QString &idToken, const QString &localID);
+      void idTokenChanged(const QString &idToken);
       void localIDChanged();
+
 
    private:
       QString mAPIKey;
       QNetworkAccessManager *mNetworkAccessManager;
 
       QString mIDToken;
+      QString mRefreshToken;
       QString mLocalID;
 
-      void performPOST(const QString &url, const QJsonDocument &payload);
-      void parseSignUpResponse(const QByteArray &byteArray);
+      QTimer mRefreshTokenTimer;
+
+      void performPOST(const QString &url, const QJsonDocument &payload, int messageType);
 
    private Q_SLOTS:
       void onReplyFinished(QNetworkReply *reply);
+      void onRefreshTokenTimeout();
+
 
    public:
       explicit FirebaseAuthHandler(QObject *parent=nullptr);
       ~FirebaseAuthHandler();
-
 
       void setAPIKey(const QString &aPIKey) { mAPIKey = aPIKey; }
 

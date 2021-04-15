@@ -1,3 +1,4 @@
+// Qt Includes
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QVariantMap>
@@ -5,6 +6,8 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+// Local Includes
+#include "Constants.h"
 #include "FirebaseInterface.h"
 
 /**
@@ -67,7 +70,7 @@ void FirebaseInterface::punchIn(const QString &projectID)
                   .arg(mIDToken);
 
    QNetworkRequest request((QUrl(endPoint)));
-   request.setAttribute((QNetworkRequest::Attribute )MessageTypeAttribute, PunchIn);
+   request.setAttribute((QNetworkRequest::Attribute ) MessageTypes::MessageTypeAttribute, MessageTypes::PunchIn);
    request.setHeader( QNetworkRequest::ContentTypeHeader, QString( "application/json"));
    mNetworkAccessManager->put(request, jsonDoc.toJson());
 }
@@ -95,7 +98,7 @@ void FirebaseInterface::punchOut()
                   .arg(mIDToken);
 
    QNetworkRequest request((QUrl(endPoint)));
-   request.setAttribute((QNetworkRequest::Attribute )MessageTypeAttribute, PunchOut);
+   request.setAttribute((QNetworkRequest::Attribute )MessageTypes::MessageTypeAttribute, MessageTypes::PunchOut);
    request.setHeader( QNetworkRequest::ContentTypeHeader, QString( "application/json"));
    mNetworkAccessManager->put(request, jsonDoc.toJson());
 }
@@ -144,26 +147,31 @@ void FirebaseInterface::registerProjectWork(const QString &projectID, const QDat
                   .arg(mIDToken);
 
    QNetworkRequest request((QUrl(endPoint)));
-   request.setAttribute((QNetworkRequest::Attribute )MessageTypeAttribute, RegisterProjectWork);
+   request.setAttribute((QNetworkRequest::Attribute )MessageTypes::MessageTypeAttribute, MessageTypes::RegisterProjectWork);
    request.setHeader( QNetworkRequest::ContentTypeHeader, QString( "application/json"));
    mNetworkAccessManager->post(request, jsonDoc.toJson());
 }
 
 void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
 {
+   int messageType = reply->request().attribute((QNetworkRequest::Attribute )MessageTypes::MessageTypeAttribute).toInt();
+
     if (reply->error() != QNetworkReply::NoError)
     {
+       QString errorText = reply->errorString();
+       qDebug() << QString("FirebaseInterface. Reply error for message type %1: %2").arg(messageType).arg(errorText);
+
       reply->deleteLater();
 
-      // TODO Report error
+      // TODO Report error properly
       return;
    }
 
-   int messageType = reply->request().attribute((QNetworkRequest::Attribute )MessageTypeAttribute).toInt();
+
 
    QByteArray byteArray = reply->readAll();
 
-   if (messageType == FetchProjectList)
+   if (messageType == MessageTypes::FetchProjectList)
    {
       QJsonDocument jsonDocument = QJsonDocument::fromJson( byteArray );
 
@@ -179,18 +187,30 @@ void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
 
       setProjectList(tmpList);
    }
-   else if (messageType == NewProject)
+   else if (messageType == MessageTypes::FetchCurrentState)
+   {
+      QJsonDocument jsonDocument = QJsonDocument::fromJson( byteArray );
+      QJsonObject jsonObject = jsonDocument.object();
+      QString currentProjectID = jsonObject.value("ProjectID").toString();
+      if (!currentProjectID.isEmpty())
+      {
+         mPunchInTimestamp = QDateTime::fromString(jsonObject.value("PunchInTime").toString(), Qt::ISODate);
+         setActiveProject(currentProjectID);
+      }
+   }
+
+   else if (messageType == MessageTypes::NewProject)
    {
       fetchProjectList();  // Re-fetch the project list
 
       qDebug() << "NEW PROJECT RESPONSE: " << byteArray;
    }
-   else if (messageType == UpdateProject)
+   else if (messageType == MessageTypes::UpdateProject)
    {
       fetchProjectList();  // Re-fetch the project list
       qDebug() << "UPDATE PROJECT RESPONSE: " << byteArray;
    }
-   else if (messageType == PunchIn)
+   else if (messageType == MessageTypes::PunchIn)
    {
       QJsonDocument jsonDocument = QJsonDocument::fromJson( byteArray );
       QJsonObject jsonObject = jsonDocument.object();
@@ -198,12 +218,13 @@ void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
       QString projectID = jsonObject.value("ProjectID").toString();
       setActiveProject(projectID);
    }
-   else if (messageType == PunchOut)
+   else if (messageType == MessageTypes::PunchOut)
    {
       qDebug() << "PUNCH-OUT RESPONSE: " << byteArray;
       mPunchInTimestamp = QDateTime();
+      setActiveProject(QString());
    }
-   else if (messageType == RegisterProjectWork)
+   else if (messageType == MessageTypes::RegisterProjectWork)
    {
       qDebug() << "REGISTER PROJECT WORK RESPONSE: " << byteArray;
    }
@@ -241,7 +262,7 @@ void FirebaseInterface::addNewProject(const QString &name, const QString &type, 
                   .arg(mIDToken);
 
    QNetworkRequest request((QUrl(endPoint)));
-   request.setAttribute((QNetworkRequest::Attribute )MessageTypeAttribute, NewProject);
+   request.setAttribute((QNetworkRequest::Attribute )MessageTypes::MessageTypeAttribute, MessageTypes::NewProject);
    request.setHeader( QNetworkRequest::ContentTypeHeader, QString( "application/json"));
    mNetworkAccessManager->post(request, jsonDoc.toJson());
 }
@@ -270,7 +291,7 @@ void FirebaseInterface::updateProject(const QString &projectID, const QString &n
                   .arg(mIDToken);
 
    QNetworkRequest request((QUrl(endPoint)));
-   request.setAttribute((QNetworkRequest::Attribute )MessageTypeAttribute, UpdateProject);
+   request.setAttribute((QNetworkRequest::Attribute )MessageTypes::MessageTypeAttribute, MessageTypes::UpdateProject);
    request.setHeader( QNetworkRequest::ContentTypeHeader, QString( "application/json"));
    mNetworkAccessManager->put(request, jsonDoc.toJson());
 
@@ -278,19 +299,27 @@ void FirebaseInterface::updateProject(const QString &projectID, const QString &n
 
 void FirebaseInterface::fetchProjectList()
 {
-   qDebug() << "FETCH NEW PROJECT LIST";
-
    QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/Projects.json?auth=%2")
                   .arg(mLocalID)
                   .arg(mIDToken);
 
    QNetworkRequest request((QUrl(endPoint)));
-   request.setAttribute((QNetworkRequest::Attribute )MessageTypeAttribute, FetchProjectList);
+   request.setAttribute((QNetworkRequest::Attribute )MessageTypes::MessageTypeAttribute, MessageTypes::FetchProjectList);
    request.setHeader( QNetworkRequest::ContentTypeHeader, QString( "application/json"));
    mNetworkAccessManager->get(request);
-
 }
 
+void FirebaseInterface::fetchCurrentState()
+{
+   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/CurrentState.json?auth=%2")
+                  .arg(mLocalID)
+                  .arg(mIDToken);
+
+   QNetworkRequest request((QUrl(endPoint)));
+   request.setAttribute((QNetworkRequest::Attribute )MessageTypes::MessageTypeAttribute, MessageTypes::FetchCurrentState);
+   request.setHeader( QNetworkRequest::ContentTypeHeader, QString( "application/json"));
+   mNetworkAccessManager->get(request);
+}
 
 /**
  * SLOT. Called when the user logs-in
@@ -304,5 +333,16 @@ void FirebaseInterface::onUserLoggedIn(const QString &idToken, const QString &lo
    mLocalID = localID;
 
    fetchProjectList();
+   fetchCurrentState();
+}
+
+/**
+ * SLOT. Called when the ID Token changes
+ *
+ * @param idToken the new ID Token
+ */
+void FirebaseInterface::onIDTokenChanged(const QString &idToken)
+{
+   mIDToken = idToken;
 }
 

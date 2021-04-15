@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
    FirebaseInterface firebaseInterface;
 
    QObject::connect(&authHandler, &FirebaseAuthHandler::userSignedIn, &firebaseInterface, &FirebaseInterface::onUserLoggedIn);
+   QObject::connect(&authHandler, &FirebaseAuthHandler::idTokenChanged, &firebaseInterface, &FirebaseInterface::onIDTokenChanged);
 
    authHandler.signUserIn("Borgar.Ovsthus@technipfmc.com", "MyPassword");
 

@@ -24,19 +24,6 @@ class FirebaseInterface : public QObject
       void projectListChanged();
 
    private:
-      enum MessageTypes
-      {
-         FetchProjectList = 10,
-         NewProject,
-         UpdateProject,
-         PunchIn,
-         PunchOut,
-         RegisterProjectWork
-
-      };
-
-      static const int MessageTypeAttribute = QNetworkRequest::User + 1;
-
       QString mIDToken;
       QString mLocalID;
 
@@ -63,6 +50,7 @@ class FirebaseInterface : public QObject
       Q_INVOKABLE bool isPunchedIn() const;
 
       Q_INVOKABLE void fetchProjectList();
+      Q_INVOKABLE void fetchCurrentState();
 
       QVariantList getProjectList() const;
 
@@ -71,7 +59,8 @@ class FirebaseInterface : public QObject
       QString getActiveProject() const;
       void setActiveProject(const QString &activeProjectID);
 
-public Q_SLOTS:
+   public Q_SLOTS:
       void onUserLoggedIn(const QString &idToken, const QString &localID);
+      void onIDTokenChanged(const QString &idToken);
 };
 

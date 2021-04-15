@@ -73,6 +73,7 @@ DISTFILES += \
    qml/SignInPage.qml
 
 HEADERS += \
+   src/Constants.h \
    src/CppInterface.h \
    src/FirebaseAuthHandler.h \
    src/FirebaseInterface.h

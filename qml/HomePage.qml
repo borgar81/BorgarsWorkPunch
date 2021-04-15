@@ -27,19 +27,20 @@ Felgo.Page
 
       delegate: Felgo.SimpleRow
       {
+         style.showDisclosure: false
          text: model.Name
-         active: index == projectListView.currentIndex
-         /*{
+         active:
+         {
             if (firebaseInterface.activeProjectID.length == 0)
             {
-               return index === 0
+               return index == projectListView.currentIndex
             }
             else
             {
                return firebaseInterface.activeProjectID === model.Id
             }
 
-         }*/
+         }
 
          detailText: (model.Type === "Network" ? "Network: " + model.NetworkOrOrder : "Order: " + model.NetworkOrOrder) + " " + "Activity: " + model.Activity
          onSelected:
@@ -63,7 +64,6 @@ Felgo.Page
       }
    }
 
-   //QtQuickControls2.Button
    Felgo.AppButton
    {
       id: punchInButton
@@ -72,28 +72,21 @@ Felgo.Page
       backgroundColor: checked ? Felgo.Theme.appButton.backgroundColor : "darkgreen"
       textColor: checked ? Felgo.Theme.appButton.textColor : "white"
       flat: false
-      checked: false
+      checked: firebaseInterface.activeProjectID.length != 0
       checkable: true
       anchors.left: parent.left
       anchors.bottom: parent.bottom
       onClicked:
       {
-         if (!checked)
+         var projectID = projectListView.model.get(projectListView.currentIndex).Id
+         if(projectID)
          {
-            checked = true
-            punchOutButton.checked = false
-
-            var projectID = projectListView.model.get(projectListView.currentIndex).Id
-            if(projectID)
-            {
-               firebaseInterface.punchIn(projectID)
-            }
+            firebaseInterface.punchIn(projectID)
          }
       }
    }
 
    Felgo.AppButton
-   //QtQuickControls2.Button
    {
       id: punchOutButton
       text: "Punch-Out"
@@ -101,17 +94,12 @@ Felgo.Page
       textColor: checked ? Felgo.Theme.appButton.textColor : "white"
       flat: false
       checkable: true
-      checked: true
+      checked: firebaseInterface.activeProjectID.length == 0
       anchors.right: parent.right
       anchors.bottom: parent.bottom
       onClicked:
       {
-         if (!checked)
-         {
-            checked = true
-            punchInButton.checked = false
-            firebaseInterface.punchOut()
-         }
+         firebaseInterface.punchOut()
       }
    }
 }
