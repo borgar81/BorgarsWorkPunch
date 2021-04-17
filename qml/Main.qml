@@ -42,7 +42,7 @@ Felgo.App
       Felgo.NavigationItem
       {
          title: "Report"
-         icon: Felgo.IconType.edit
+         icon: Felgo.IconType.filetexto
          Felgo.NavigationStack
          {
             GenerateReportPage

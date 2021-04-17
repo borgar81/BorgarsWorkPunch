@@ -228,6 +228,10 @@ void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
    {
       qDebug() << "REGISTER PROJECT WORK RESPONSE: " << byteArray;
    }
+   else if (messageType == MessageTypes::FetchReport)
+   {
+      qDebug() << "FETCH REPORT RESPONSE: " << byteArray;
+   }
    else
    {
    //parseSignUpResponse(response);
@@ -321,6 +325,18 @@ void FirebaseInterface::fetchCurrentState()
    mNetworkAccessManager->get(request);
 }
 
+void FirebaseInterface::fetchReport()
+{
+   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/TimeRegistration/2021/15.json?auth=%2")
+                  .arg(mLocalID)
+                  .arg(mIDToken);
+
+   QNetworkRequest request((QUrl(endPoint)));
+   request.setAttribute((QNetworkRequest::Attribute )MessageTypes::MessageTypeAttribute, MessageTypes::FetchReport);
+   request.setHeader( QNetworkRequest::ContentTypeHeader, QString( "application/json"));
+   mNetworkAccessManager->get(request);
+}
+
 /**
  * SLOT. Called when the user logs-in
  *
@@ -334,6 +350,8 @@ void FirebaseInterface::onUserLoggedIn(const QString &idToken, const QString &lo
 
    fetchProjectList();
    fetchCurrentState();
+
+   fetchReport();
 }
 
 /**

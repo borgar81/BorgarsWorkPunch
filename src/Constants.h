@@ -15,7 +15,8 @@ namespace MessageTypes
       RegisterProjectWork,
       SignUserUp,
       SignUserIn,
-      RefreshToken
+      RefreshToken,
+      FetchReport
    };
 
    static const int MessageTypeAttribute = QNetworkRequest::User + 1;

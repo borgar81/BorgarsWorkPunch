@@ -52,6 +52,8 @@ class FirebaseInterface : public QObject
       Q_INVOKABLE void fetchProjectList();
       Q_INVOKABLE void fetchCurrentState();
 
+      Q_INVOKABLE void fetchReport();
+
       QVariantList getProjectList() const;
 
       void setProjectList(const QVariantList &projectList);
