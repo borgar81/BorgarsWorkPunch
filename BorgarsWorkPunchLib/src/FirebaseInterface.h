@@ -33,7 +33,7 @@ class FirebaseInterface : public QObject
 
       QNetworkAccessManager *mNetworkAccessManager;
 
-      void registerProjectWork(const QString &projectID, const QDateTime &startTimeUTC, const QDateTime &endTimeUTC);
+
 
    private Q_SLOTS:
       void onReplyFinished(QNetworkReply *reply);
@@ -58,10 +58,18 @@ class FirebaseInterface : public QObject
 
       void setProjectList(const QVariantList &projectList);
 
+      void registerProjectWork(const QString &projectID, const QDateTime &startTimeUTC, const QDateTime &endTimeUTC);      // TODO Make private! Only public for testing with TestApplication
+
       QString getActiveProject() const;
       void setActiveProject(const QString &activeProjectID);
 
-   public Q_SLOTS:
+      void setIDToken(const QString &iDToken);
+
+      void setLocalID(const QString &localID);
+
+
+
+public Q_SLOTS:
       void onUserLoggedIn(const QString &idToken, const QString &localID);
       void onIDTokenChanged(const QString &idToken);
 };

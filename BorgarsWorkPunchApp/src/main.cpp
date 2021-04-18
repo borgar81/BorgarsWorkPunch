@@ -5,9 +5,9 @@
 
 #include <QQmlApplicationEngine>
 
-#include "FirebaseInterface.h"
-#include "FirebaseAuthHandler.h"
-#include "CppInterface.h"
+#include "BorgarsWorkPunchLib/src/FirebaseInterface.h"
+#include "BorgarsWorkPunchLib/src/FirebaseAuthHandler.h"
+#include "BorgarsWorkPunchLib/src/CppInterface.h"
 
 // uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 //#include <FelgoLiveClient>

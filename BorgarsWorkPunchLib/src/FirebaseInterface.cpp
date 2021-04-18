@@ -140,10 +140,11 @@ void FirebaseInterface::registerProjectWork(const QString &projectID, const QDat
    variantMap["PunchOutTime"] = endTimeUTC.toString(Qt::ISODate);
 
    QJsonDocument jsonDoc = QJsonDocument::fromVariant(variantMap);
-   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/TimeRegistration/%2/%3.json?auth=%4")
+   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/TimeRegistration/%2/%3/%4.json?auth=%5")
                   .arg(mLocalID)
                   .arg(endTimeUTC.date().year())
-                  .arg(endTimeUTC.date().weekNumber())
+                  .arg(endTimeUTC.date().month())
+                  .arg(endTimeUTC.date().day())
                   .arg(mIDToken);
 
    QNetworkRequest request((QUrl(endPoint)));
@@ -327,7 +328,7 @@ void FirebaseInterface::fetchCurrentState()
 
 void FirebaseInterface::fetchReport()
 {
-   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/TimeRegistration/2021/15.json?auth=%2")
+   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/TimeRegistration/2021/4.json?&auth=%2")
                   .arg(mLocalID)
                   .arg(mIDToken);
 
@@ -350,8 +351,6 @@ void FirebaseInterface::onUserLoggedIn(const QString &idToken, const QString &lo
 
    fetchProjectList();
    fetchCurrentState();
-
-   fetchReport();
 }
 
 /**
@@ -364,3 +363,13 @@ void FirebaseInterface::onIDTokenChanged(const QString &idToken)
    mIDToken = idToken;
 }
 
+
+void FirebaseInterface::setIDToken(const QString &iDToken)
+{
+   mIDToken = iDToken;
+}
+
+void FirebaseInterface::setLocalID(const QString &localID)
+{
+   mLocalID = localID;
+}
