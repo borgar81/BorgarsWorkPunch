@@ -74,3 +74,4 @@ HEADERS +=
 INCLUDEPATH +=  ../
 
 LIBS += -L../BorgarsWorkPunchLib -lBorgarsWorkPunchLib
+PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/libBorgarsWorkPunchLib.a

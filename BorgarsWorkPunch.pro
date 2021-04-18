@@ -1,8 +1,12 @@
 TEMPLATE = subdirs
-CONFIG += ordered
+#CONFIG += ordered
 SUBDIRS += \
            BorgarsWorkPunchLib \
            BorgarsWorkPunchApp \
-           TestApplication
+           TestApplication \
+           tests
+
+BorgarsWorkPunchApp.depends = BorgarsWorkPunchLib
+TestApplication.depends = BorgarsWorkPunchLib
 
 

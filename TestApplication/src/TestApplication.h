@@ -20,6 +20,7 @@ class TestApplication : public QObject
 
    private Q_SLOTS:
       void onUserLoggedIn(const QString &idToken, const QString &localID);
+      void onReportFetched(const QByteArray &byteArray);
 
    public:
       explicit TestApplication(QObject *parent = nullptr);

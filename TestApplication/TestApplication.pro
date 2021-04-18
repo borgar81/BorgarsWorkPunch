@@ -27,6 +27,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 INCLUDEPATH +=  ../
 
 LIBS += -L../BorgarsWorkPunchLib -lBorgarsWorkPunchLib
+PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/libBorgarsWorkPunchLib.a
 
 HEADERS += \
    src/TestApplication.h

@@ -5,10 +5,13 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QElapsedTimer>
 
 // Local Includes
 #include "Constants.h"
 #include "FirebaseInterface.h"
+
+QElapsedTimer timer;
 
 /**
  * Constructor
@@ -140,11 +143,10 @@ void FirebaseInterface::registerProjectWork(const QString &projectID, const QDat
    variantMap["PunchOutTime"] = endTimeUTC.toString(Qt::ISODate);
 
    QJsonDocument jsonDoc = QJsonDocument::fromVariant(variantMap);
-   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/TimeRegistration/%2/%3/%4.json?auth=%5")
+   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/TimeRegistration/%2/%3.json?auth=%5")
                   .arg(mLocalID)
                   .arg(endTimeUTC.date().year())
-                  .arg(endTimeUTC.date().month())
-                  .arg(endTimeUTC.date().day())
+                  .arg(endTimeUTC.date().weekNumber())
                   .arg(mIDToken);
 
    QNetworkRequest request((QUrl(endPoint)));
@@ -231,7 +233,10 @@ void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
    }
    else if (messageType == MessageTypes::FetchReport)
    {
-      qDebug() << "FETCH REPORT RESPONSE: " << byteArray;
+      //qDebug() << "FETCH REPORT RESPONSE: " << byteArray;
+      emit reportFetched(byteArray);
+      //qDebug() << "Time used: " << timer.elapsed();
+
    }
    else
    {
@@ -326,10 +331,14 @@ void FirebaseInterface::fetchCurrentState()
    mNetworkAccessManager->get(request);
 }
 
-void FirebaseInterface::fetchReport()
+void FirebaseInterface::fetchReport(int year, int weekNumber)
 {
-   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/TimeRegistration/2021/4.json?&auth=%2")
+   timer.start();
+
+   QString endPoint = QString("https://borgarsworkpunch-default-rtdb.europe-west1.firebasedatabase.app/Users/%1/TimeRegistration/%2/%3.json?&auth=%4")
                   .arg(mLocalID)
+                  .arg(year)
+                  .arg(weekNumber)
                   .arg(mIDToken);
 
    QNetworkRequest request((QUrl(endPoint)));

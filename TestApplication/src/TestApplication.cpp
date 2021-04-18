@@ -1,8 +1,10 @@
 // Qt Includes
+#include <QCoreApplication>
 
 // Library Includes
 #include "BorgarsWorkPunchLib/src/FirebaseAuthHandler.h"
 #include "BorgarsWorkPunchLib/src/FirebaseInterface.h"
+#include "BorgarsWorkPunchLib/src/ReportParser.h"
 
 
 // Local Includes
@@ -21,7 +23,8 @@ TestApplication::TestApplication(QObject *parent)
 
    mFirebaseInterface = new FirebaseInterface(this);
 
-   connect(mAutHandler, &FirebaseAuthHandler::userSignedIn,    this, &TestApplication::onUserLoggedIn);
+   connect(mAutHandler, &FirebaseAuthHandler::userSignedIn,          this, &TestApplication::onUserLoggedIn);
+   connect(mFirebaseInterface, &FirebaseInterface::reportFetched,    this, &TestApplication::onReportFetched);
 
    mAutHandler->signUserIn("Borgar.Ovsthus@technipfmc.com", "MyPassword");
 }
@@ -54,5 +57,23 @@ void TestApplication::onUserLoggedIn(const QString &idToken, const QString &loca
    //createTestData();
 
 
-   mFirebaseInterface->fetchReport();
+   mFirebaseInterface->fetchReport(2021, 15);
+}
+
+void TestApplication::onReportFetched(const QByteArray &byteArray)
+{
+   ReportParser reportParser(this);
+   if (!reportParser.initialize(byteArray))
+   {
+      qApp->quit();
+      qDebug() << reportParser.getErrorText();
+      return;
+   }
+
+   QDateTime fromTimeUTC = QDateTime(QDate(2021,  4, 12), QTime( 0,  0, 1), Qt::UTC);
+   QDateTime toTimeUTC = QDateTime(QDate(2021,  4, 18), QTime( 23,  59, 59), Qt::UTC);
+
+   reportParser.createWeekReport(fromTimeUTC, toTimeUTC);
+
+   qApp->quit();
 }

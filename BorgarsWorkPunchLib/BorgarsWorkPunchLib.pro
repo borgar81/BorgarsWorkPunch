@@ -20,13 +20,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
    src/CppInterface.cpp \
    src/FirebaseAuthHandler.cpp \
-   src/FirebaseInterface.cpp
+   src/FirebaseInterface.cpp \
+   src/ReportParser.cpp \
+   src/Util.cpp
 
 HEADERS += \
    src/Constants.h \
    src/CppInterface.h \
    src/FirebaseAuthHandler.h \
-   src/FirebaseInterface.h
+   src/FirebaseInterface.h \
+   src/ReportParser.h \
+   src/Util.h
 
 # Default rules for deployment.
 unix {

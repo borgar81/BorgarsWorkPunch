@@ -23,6 +23,8 @@ class FirebaseInterface : public QObject
       void activeProjectIDChanged();
       void projectListChanged();
 
+      void reportFetched(const QByteArray &bytearray);
+
    private:
       QString mIDToken;
       QString mLocalID;
@@ -32,8 +34,6 @@ class FirebaseInterface : public QObject
       QDateTime mPunchInTimestamp;
 
       QNetworkAccessManager *mNetworkAccessManager;
-
-
 
    private Q_SLOTS:
       void onReplyFinished(QNetworkReply *reply);
@@ -52,7 +52,7 @@ class FirebaseInterface : public QObject
       Q_INVOKABLE void fetchProjectList();
       Q_INVOKABLE void fetchCurrentState();
 
-      Q_INVOKABLE void fetchReport();
+      Q_INVOKABLE void fetchReport(int year, int weekNumber);
 
       QVariantList getProjectList() const;
 
