@@ -4,6 +4,10 @@
 #include <QNetworkRequest>
 #include <QDateTime>
 
+#include "WeekReport.h"
+
+#include "WeekReportModel.h"  // TODO Should this be forward declared?
+
 class QNetworkReply;
 class QNetworkAccessManager;
 
@@ -18,10 +22,13 @@ class FirebaseInterface : public QObject
 
    Q_PROPERTY(QString activeProjectID READ getActiveProject WRITE setActiveProject NOTIFY activeProjectIDChanged);
    Q_PROPERTY(QVariantList projectList READ getProjectList NOTIFY projectListChanged);
+   Q_PROPERTY(WeekReport currentWeekReport READ getCurrentWeekReport NOTIFY currentWeekReportChanged)
+   Q_PROPERTY(WeekReportModel *currentWeekReportModel READ getCurrentWeekReportModel CONSTANT)
 
    signals:
       void activeProjectIDChanged();
       void projectListChanged();
+      void currentWeekReportChanged();
 
       void reportFetched(const QByteArray &bytearray);
 
@@ -32,6 +39,9 @@ class FirebaseInterface : public QObject
       QString mActiveProjectID;
       QVariantList mProjectList;
       QDateTime mPunchInTimestamp;
+
+      WeekReport mCurrentWeekReport;
+      WeekReportModel *mCurrentWeekReportModel;
 
       QNetworkAccessManager *mNetworkAccessManager;
 
@@ -67,7 +77,9 @@ class FirebaseInterface : public QObject
 
       void setLocalID(const QString &localID);
 
+      WeekReport getCurrentWeekReport() const;
 
+      WeekReportModel *getCurrentWeekReportModel() const;
 
 public Q_SLOTS:
       void onUserLoggedIn(const QString &idToken, const QString &localID);

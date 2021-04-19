@@ -4,35 +4,8 @@
 #include <QObject>
 #include <QJsonDocument>
 
-class TimeRegistration
-{
-   private:
-      QDateTime mPunchInTimeUTC;
-      QDateTime mPunchOutTimeUTC;
+#include "WeekReport.h"
 
-
-   public:
-      TimeRegistration(const QDateTime &punchInUTC, const QDateTime &punchOutUTC)
-      {
-         mPunchInTimeUTC = punchInUTC;
-         mPunchOutTimeUTC = punchOutUTC;
-      }
-
-};
-
-class DayReport
-{
-   private:
-      QString mDayName;
-
-   public:
-      DayReport(const QString &dayName)
-      {
-         mDayName = dayName;
-      }
-      QList<TimeRegistration> mTimeRegistrationList;
-
-};
 
 class ReportParser : public QObject
 {
@@ -54,7 +27,7 @@ class ReportParser : public QObject
 
       QString getErrorText() const;
 
-      void createWeekReport(const QDateTime &fromDateTimeUTC, const QDateTime &toDateTimeUTC);
+      WeekReport createWeekReport(const QDateTime &fromDateTimeUTC, const QDateTime &toDateTimeUTC);
 
 
 };

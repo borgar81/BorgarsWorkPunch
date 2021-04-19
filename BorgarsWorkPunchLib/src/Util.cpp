@@ -2,7 +2,6 @@
 
 #include "Util.h"
 
-
 /**
  * Returns the name of the day for the given week day number
  *
@@ -10,37 +9,37 @@
  *
  * @return week day name
  */
-QString Util::getDayOfWeekAsText(int weekDayNumber)
+QString Util::getDayOfWeekAsText(WeekDays::WeekDaysEnum weekDay)
 {
    QString weekDayName;
 
-   switch(weekDayNumber)
+   switch(weekDay)
    {
-      case 1:
+      case WeekDays::Monday:
          weekDayName = QObject::tr("Monday");
          break;
 
-      case 2:
+      case WeekDays::Tuesday:
          weekDayName = QObject::tr("Tuesday");
          break;
 
-      case 3:
+      case WeekDays::Wednesday:
          weekDayName = QObject::tr("Wednesday");
          break;
 
-      case 4:
+      case WeekDays::Thursday:
          weekDayName = QObject::tr("Thursday");
          break;
 
-      case 5:
+      case WeekDays::Friday:
          weekDayName = QObject::tr("Friday");
          break;
 
-      case 6:
+      case WeekDays::Saturday:
          weekDayName = QObject::tr("Saturday");
          break;
 
-      case 7:
+      case WeekDays::Sunday:
          weekDayName = QObject::tr("Sunday");
          break;
 

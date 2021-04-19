@@ -8,6 +8,8 @@
 #include <QElapsedTimer>
 
 // Local Includes
+#include "ReportParser.h"
+#include "WeekReport.h"
 #include "Constants.h"
 #include "FirebaseInterface.h"
 
@@ -23,6 +25,8 @@ FirebaseInterface::FirebaseInterface(QObject *parent)
 {
    mNetworkAccessManager = new QNetworkAccessManager(this);
    connect(mNetworkAccessManager, &QNetworkAccessManager::finished, this, &FirebaseInterface::onReplyFinished);
+
+   mCurrentWeekReportModel = new WeekReportModel(this);
 }
 
 /**
@@ -155,6 +159,16 @@ void FirebaseInterface::registerProjectWork(const QString &projectID, const QDat
    mNetworkAccessManager->post(request, jsonDoc.toJson());
 }
 
+WeekReport FirebaseInterface::getCurrentWeekReport() const
+{
+    return mCurrentWeekReport;
+}
+
+WeekReportModel *FirebaseInterface::getCurrentWeekReportModel() const
+{
+   return mCurrentWeekReportModel;
+}
+
 void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
 {
    int messageType = reply->request().attribute((QNetworkRequest::Attribute )MessageTypes::MessageTypeAttribute).toInt();
@@ -235,6 +249,17 @@ void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
    {
       //qDebug() << "FETCH REPORT RESPONSE: " << byteArray;
       emit reportFetched(byteArray);
+
+      QDateTime fromTimeUTC = QDateTime(QDate(2021,  4, 12), QTime( 0,  0, 1), Qt::UTC);
+      QDateTime toTimeUTC = QDateTime(QDate(2021,  4, 18), QTime( 23,  59, 59), Qt::UTC);
+
+      ReportParser reportParser(this);
+      WeekReport weekReport = reportParser.createWeekReport(fromTimeUTC, toTimeUTC);
+      mCurrentWeekReport = weekReport;
+
+      mCurrentWeekReportModel->updateWeekReport(weekReport);
+
+      emit currentWeekReportChanged(); // TODO REMOVE
       //qDebug() << "Time used: " << timer.elapsed();
 
    }

@@ -8,6 +8,9 @@
 #include "BorgarsWorkPunchLib/src/FirebaseInterface.h"
 #include "BorgarsWorkPunchLib/src/FirebaseAuthHandler.h"
 #include "BorgarsWorkPunchLib/src/CppInterface.h"
+#include "BorgarsWorkPunchLib/src/WeekReport.h"
+#include "BorgarsWorkPunchLib/src/DayReport.h"
+#include "BorgarsWorkPunchLib/src/WeekReportModel.h"
 
 // uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 //#include <FelgoLiveClient>
@@ -20,6 +23,11 @@ const QString API_KEY = "AIzaSyCaK51HBaXFPKlMOd3-SxgQVAeFt9ygFXE";
 int main(int argc, char *argv[])
 {
    QApplication app(argc, argv);
+
+   qRegisterMetaType<WeekReport>();
+   qRegisterMetaType<DayReport>();
+   qRegisterMetaType<WeekReportModel *>("WeekReportModel *");
+
 
    QCoreApplication::setApplicationName("BorgarsWorkPunch");
    QCoreApplication::setOrganizationName("BorgarSoft");

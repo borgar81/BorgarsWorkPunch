@@ -19,18 +19,26 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
    src/CppInterface.cpp \
+   src/DayReport.cpp \
    src/FirebaseAuthHandler.cpp \
    src/FirebaseInterface.cpp \
    src/ReportParser.cpp \
-   src/Util.cpp
+   src/TimeRegistration.cpp \
+   src/Util.cpp \
+   src/WeekReport.cpp \
+   src/WeekReportModel.cpp
 
 HEADERS += \
    src/Constants.h \
    src/CppInterface.h \
+   src/DayReport.h \
    src/FirebaseAuthHandler.h \
    src/FirebaseInterface.h \
    src/ReportParser.h \
-   src/Util.h
+   src/TimeRegistration.h \
+   src/Util.h \
+   src/WeekReport.h \
+   src/WeekReportModel.h
 
 # Default rules for deployment.
 unix {

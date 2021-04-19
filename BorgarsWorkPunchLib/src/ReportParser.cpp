@@ -7,6 +7,7 @@
 
 // Local Includes
 #include "Util.h"
+#include "WeekReport.h"
 #include "ReportParser.h"
 
 /**
@@ -63,18 +64,21 @@ bool ReportParser::isTimeRegInsideFromAndTo(const QDateTime &punchInUTC, const Q
 }
 
 
-void ReportParser::createWeekReport(const QDateTime &fromDateTimeUTC, const QDateTime &toDateTimeUTC)
+WeekReport ReportParser::createWeekReport(const QDateTime &fromDateTimeUTC, const QDateTime &toDateTimeUTC)
 {
    //QMap<QString, DayReport> reportMap; // Key is Week day name
 
-   QList<DayReport> weekReportList;
-   weekReportList << DayReport(tr("Monday"));
-   weekReportList << DayReport(tr("Tuesday"));
-   weekReportList << DayReport(tr("Wednesday"));
-   weekReportList << DayReport(tr("Thursday"));
-   weekReportList << DayReport(tr("Friday"));
-   weekReportList << DayReport(tr("Saturday"));
-   weekReportList << DayReport(tr("Sunday"));
+   /*QList<DayReport> weekReportList;
+   weekReportList << DayReport(WeekDays::Monday);
+   weekReportList << DayReport(WeekDays::Tuesday);
+   weekReportList << DayReport(WeekDays::Wednesday);
+   weekReportList << DayReport(WeekDays::Thursday);
+   weekReportList << DayReport(WeekDays::Friday);
+   weekReportList << DayReport(WeekDays::Saturday);
+   weekReportList << DayReport(WeekDays::Sunday);
+   */
+
+   WeekReport weekReport(fromDateTimeUTC, toDateTimeUTC);
 
    QJsonObject rootObject = mJsonDocument.object();
    for (auto it = rootObject.begin(); it != rootObject.end(); it++)
@@ -89,14 +93,17 @@ void ReportParser::createWeekReport(const QDateTime &fromDateTimeUTC, const QDat
          continue;
       }
 
-      QString weekDayName = Util::getDayOfWeekAsText(punchInTimeUTC.date().dayOfWeek());
+      //QString weekDayName = Util::getDayOfWeekAsText((WeekDays::WeekDaysEnum) punchInTimeUTC.date().dayOfWeek());
 
-      DayReport &dayReport = weekReportList[punchInTimeUTC.date().dayOfWeek()-1];
+
+      DayReport &dayReport = weekReport.mDayReportList[punchInTimeUTC.date().dayOfWeek()-1];
 
       dayReport.mTimeRegistrationList << TimeRegistration(punchInTimeUTC, punchOutTimeUTC);
 
       //qDebug() << weekDayName;
    }
 
-   qDebug() << weekReportList.size();
+   return weekReport;
+
+   //qDebug() << weekReport.mDayReportList.size();
 }

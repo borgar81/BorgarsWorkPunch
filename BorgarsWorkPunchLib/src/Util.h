@@ -2,6 +2,9 @@
 
 #include <QString>
 
+#include "Constants.h"
+
+
 class Util
 {
    private:
@@ -9,6 +12,6 @@ class Util
 
    public:
 
-      static QString getDayOfWeekAsText(int weekDayNumber);
+      static QString getDayOfWeekAsText(WeekDays::WeekDaysEnum weekDay);
 };
 

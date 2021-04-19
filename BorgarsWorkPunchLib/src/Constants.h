@@ -21,3 +21,17 @@ namespace MessageTypes
 
    static const int MessageTypeAttribute = QNetworkRequest::User + 1;
 }
+
+namespace WeekDays
+{
+   enum WeekDaysEnum
+   {
+      Monday = 1,
+      Tuesday,
+      Wednesday,
+      Thursday,
+      Friday,
+      Saturday,
+      Sunday
+   };
+}
