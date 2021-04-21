@@ -30,6 +30,11 @@ Felgo.Page
       anchors.left: parent.left
       anchors.right: parent.right
 
+      Felgo.IconButton
+      {
+         icon: Felgo.IconType.calendar
+      }
+
       Felgo.AppText
       {
 
@@ -42,7 +47,11 @@ Felgo.Page
       }
       Felgo.IconButton
       {
-         icon: Felgo.IconType.edit
+         icon: Felgo.IconType.envelope
+         onClicked:
+         {
+            cppInterface.sendEmailReport();
+         }
       }
 
    }

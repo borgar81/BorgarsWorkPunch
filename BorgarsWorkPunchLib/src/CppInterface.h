@@ -12,6 +12,6 @@ class CppInterface : public QObject
       explicit CppInterface(QObject *parent = nullptr);
 
 
-
+   Q_INVOKABLE bool sendEmailReport();
 };
 
