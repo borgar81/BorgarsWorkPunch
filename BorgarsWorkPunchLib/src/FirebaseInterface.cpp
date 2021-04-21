@@ -194,13 +194,19 @@ void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
 
       QVariantList tmpList;
 
+      mProjectIDCrossRefMap.clear();
+
       QJsonObject jsonObject = jsonDocument.object();
       for(auto it = jsonObject.begin(), end = jsonObject.end(); it != end; ++it)
       {
          QVariantMap map = it.value().toObject().toVariantMap();
          map["Id"] = it.key();
          tmpList << map;
+
+         mProjectIDCrossRefMap.insert(it.key(), map.value("Name").toString());
       }
+
+      mCurrentWeekReportModel->updateProjectIDCrossRefMap(mProjectIDCrossRefMap);
 
       setProjectList(tmpList);
    }
@@ -254,6 +260,7 @@ void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
       QDateTime toTimeUTC = QDateTime(QDate(2021,  4, 18), QTime( 23,  59, 59), Qt::UTC);
 
       ReportParser reportParser(this);
+      reportParser.initialize(byteArray);
       WeekReport weekReport = reportParser.createWeekReport(fromTimeUTC, toTimeUTC);
       mCurrentWeekReport = weekReport;
 

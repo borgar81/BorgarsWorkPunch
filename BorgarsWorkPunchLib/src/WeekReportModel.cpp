@@ -19,6 +19,11 @@ void WeekReportModel::updateWeekReport(const WeekReport &weekReport)
    endResetModel();
 }
 
+void WeekReportModel::updateProjectIDCrossRefMap(QMap<QString, QString> projectIDCrossRefMap)
+{
+   mProjectIDCrossRefMap = projectIDCrossRefMap;
+}
+
 int WeekReportModel::rowCount(const QModelIndex &parent) const
 {
    Q_UNUSED(parent)
@@ -37,9 +42,9 @@ QVariant WeekReportModel::data(const QModelIndex &index, int role) const
    {
       return mWeekReport.getDayReportList().at(index.row()).getDayName();
    }
-   else if (role == WeekDayNameRole)
+   else if (role == WeekReportDay)
    {
-      return mWeekReport.getFromDateTimeUTC().toLocalTime();
+      return mWeekReport.getDayReport(index.row(), mProjectIDCrossRefMap);
    }
 
    return QVariant();
@@ -51,6 +56,7 @@ QHash<int, QByteArray> WeekReportModel::roleNames() const
    QHash<int, QByteArray> roles;
    roles[WeekDayNameRole] = "WeekDayName";
    roles[DateRole] = "Date";
-   roles[SizeRole] = "size";
+   roles[TotalWorkTimeDay] = "TotalWorkTimeDay";
+   roles[WeekReportDay] = "WeekReportDay";
    return roles;
 }

@@ -3,6 +3,7 @@
 #include <QObject>
 #include <QNetworkRequest>
 #include <QDateTime>
+#include <QMap>
 
 #include "WeekReport.h"
 
@@ -42,6 +43,9 @@ class FirebaseInterface : public QObject
 
       WeekReport mCurrentWeekReport;
       WeekReportModel *mCurrentWeekReportModel;
+
+      /** Map containing ProjectIDs and Project Names. Key is ProjectID */
+      QMap<QString, QString> mProjectIDCrossRefMap;
 
       QNetworkAccessManager *mNetworkAccessManager;
 

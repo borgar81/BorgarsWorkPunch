@@ -59,7 +59,7 @@ Felgo.Page
       {
          style.showDisclosure: false
          text: model.WeekDayName
-         detailText: "Gjoa\n7 hours"
+         detailText: model.WeekReportDay
          //iconSource: Felgo.IconType.edit
       }
 

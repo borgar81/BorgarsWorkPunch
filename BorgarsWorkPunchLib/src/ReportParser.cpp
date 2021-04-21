@@ -85,6 +85,7 @@ WeekReport ReportParser::createWeekReport(const QDateTime &fromDateTimeUTC, cons
    {
       QJsonObject timeRegObject = it.value().toObject();
 
+      QString projectID = timeRegObject.value("ProjectID").toString();
       QDateTime punchInTimeUTC = QDateTime::fromString(timeRegObject.value("PunchInTime").toString(), Qt::ISODate);
       QDateTime punchOutTimeUTC = QDateTime::fromString(timeRegObject.value("PunchOutTime").toString(), Qt::ISODate);
 
@@ -95,12 +96,9 @@ WeekReport ReportParser::createWeekReport(const QDateTime &fromDateTimeUTC, cons
 
       //QString weekDayName = Util::getDayOfWeekAsText((WeekDays::WeekDaysEnum) punchInTimeUTC.date().dayOfWeek());
 
-
       DayReport &dayReport = weekReport.mDayReportList[punchInTimeUTC.date().dayOfWeek()-1];
 
-      dayReport.mTimeRegistrationList << TimeRegistration(punchInTimeUTC, punchOutTimeUTC);
-
-      //qDebug() << weekDayName;
+      dayReport.mTimeRegistrationList << TimeRegistration(projectID, punchInTimeUTC, punchOutTimeUTC);
    }
 
    return weekReport;

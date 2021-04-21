@@ -22,6 +22,12 @@ class WeekReport
       QList<DayReport> mDayReportList;
 
       QList<DayReport> getDayReportList() const;
+      QDateTime getFromDateTimeUTC() const;
+      QDateTime getToDateTimeUTC() const;
+
+      quint64 getTotalWorkTime(int day) const;
+      QString getDayReport(int day, const QMap<QString, QString> &projectIDMap) const;
+
 };
 
 Q_DECLARE_METATYPE(WeekReport)
