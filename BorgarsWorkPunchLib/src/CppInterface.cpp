@@ -27,7 +27,7 @@ bool CppInterface::sendEmailReport()
    QString text;
    text += "Copy This into SAP\n\n";
    text += "==================================\n";
-   text += "reportStr";
+   text += "1	2	3	4	5	6	7				11	12		14	15		16	17		18	19		20	21		22	23		50	51";
    text += "\n";
    text += "==================================\n";
 
