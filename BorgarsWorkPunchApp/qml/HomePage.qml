@@ -1,19 +1,39 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.15 as QtQuickControls2
 import Felgo 3.0 as Felgo
+import com.borgarsoft.BorgarsWorkPunch 1.0
 
 Felgo.Page
 {
    title: qsTr("Home")
 
+   onAppeared:
+   {
+      sqlInterface.fetchProjectList();
+   }
+
    Felgo.AppText
    {
       id: todayCounterText
-      text: "Today: " + "0:00"
+      //text: "Today: " + "0:00"
+      text: "Today: " + Qt.formatTime(sqlInterface.totalWorkedTimeToday, "h:mm")
       anchors.left: parent.left
       anchors.top: parent.top
       anchors.leftMargin: 10
       anchors.topMargin: 10
+   }
+   Felgo.IconButton
+   {
+      id: refreshButton
+      anchors.left: todayCounterText.right
+      anchors.verticalCenter: todayCounterText.verticalCenter
+      anchors.leftMargin: 10
+      anchors.topMargin: 10
+      icon: Felgo.IconType.refresh
+      onClicked:
+      {
+         sqlInterface.updateTotalTimeWorkedToday();
+      }
    }
 
    Felgo.AppListView
@@ -31,25 +51,25 @@ Felgo.Page
          text: model.Name
          active:
          {
-            if (firebaseInterface.activeProjectID.length == 0)
+            if (sqlInterface.activeProjectID === -1)
             {
                return index == projectListView.currentIndex
             }
             else
             {
-               return firebaseInterface.activeProjectID === model.Id
+               return sqlInterface.activeProjectID === model.Id
             }
 
          }
 
-         detailText: (model.Type === "Network" ? "Network: " + model.NetworkOrOrder : "Order: " + model.NetworkOrOrder) + " " + "Activity: " + model.Activity
+         detailText: (model.Type === ProjectTypes.Network ? "Network: " + model.NetworkOrOrder : "Order: " + model.NetworkOrOrder) + " " + "Activity: " + model.Activity
          onSelected:
          {
             projectListView.currentIndex = index
 
-            if (firebaseInterface.isPunchedIn())
+            if (sqlInterface.isPunchedIn())
             {
-               firebaseInterface.changeCurrentProject(model.Id)
+               sqlInterface.changeCurrentProject(model.Id)
             }
 
             //firebaseInterface.activeProjectID = model.Id
@@ -60,7 +80,7 @@ Felgo.Page
       {
          keyField: "Id"
          fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity"]
-         source: firebaseInterface.projectList
+         source: sqlInterface.projectList
       }
    }
 
@@ -72,7 +92,7 @@ Felgo.Page
       backgroundColor: checked ? Felgo.Theme.appButton.backgroundColor : "darkgreen"
       textColor: checked ? Felgo.Theme.appButton.textColor : "white"
       flat: false
-      checked: firebaseInterface.activeProjectID.length != 0
+      checked: sqlInterface.activeProjectID !== -1
       checkable: true
       anchors.left: parent.left
       anchors.bottom: parent.bottom
@@ -81,7 +101,7 @@ Felgo.Page
          var projectID = projectListView.model.get(projectListView.currentIndex).Id
          if(projectID)
          {
-            firebaseInterface.punchIn(projectID)
+            sqlInterface.punchIn(projectID)
          }
       }
    }
@@ -94,12 +114,12 @@ Felgo.Page
       textColor: checked ? Felgo.Theme.appButton.textColor : "white"
       flat: false
       checkable: true
-      checked: firebaseInterface.activeProjectID.length == 0
+      checked: sqlInterface.activeProjectID === -1
       anchors.right: parent.right
       anchors.bottom: parent.bottom
       onClicked:
       {
-         firebaseInterface.punchOut()
+         sqlInterface.punchOut()
       }
    }
 }

@@ -5,19 +5,21 @@
 
 #include <QQmlApplicationEngine>
 
-#include "BorgarsWorkPunchLib/src/FirebaseInterface.h"
-#include "BorgarsWorkPunchLib/src/FirebaseAuthHandler.h"
+//DISABLE_FIREGBASE #include "BorgarsWorkPunchLib/src/FirebaseInterface.h"
+//DISABLE_FIREGBASE #include "BorgarsWorkPunchLib/src/FirebaseAuthHandler.h"
+#include "BorgarsWorkPunchLib/src/Constants.h"
 #include "BorgarsWorkPunchLib/src/CppInterface.h"
 #include "BorgarsWorkPunchLib/src/WeekReport.h"
 #include "BorgarsWorkPunchLib/src/DayReport.h"
 #include "BorgarsWorkPunchLib/src/WeekReportModel.h"
+#include "BorgarsWorkPunchLib/src/SQLInterface.h"
 
 // uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 //#include <FelgoLiveClient>
 
 // Firebase API key: AIzaSyCaK51HBaXFPKlMOd3-SxgQVAeFt9ygFXE
 
-const QString API_KEY = "AIzaSyCaK51HBaXFPKlMOd3-SxgQVAeFt9ygFXE";
+//DISABLE_FIREGBASE const QString API_KEY = "AIzaSyCaK51HBaXFPKlMOd3-SxgQVAeFt9ygFXE";
 
 
 int main(int argc, char *argv[])
@@ -33,15 +35,26 @@ int main(int argc, char *argv[])
    QCoreApplication::setOrganizationName("BorgarSoft");
    QCoreApplication::setOrganizationDomain("org.borgarsoft");
 
-   FirebaseAuthHandler authHandler;
-   authHandler.setAPIKey(API_KEY);
+   //DISABLE_FIREGBASE FirebaseAuthHandler authHandler;
+   //DISABLE_FIREGBASE authHandler.setAPIKey(API_KEY);
 
-   FirebaseInterface firebaseInterface;
+   //DISABLE_FIREGBASE FirebaseInterface firebaseInterface;
 
-   QObject::connect(&authHandler, &FirebaseAuthHandler::userSignedIn, &firebaseInterface, &FirebaseInterface::onUserLoggedIn);
-   QObject::connect(&authHandler, &FirebaseAuthHandler::idTokenChanged, &firebaseInterface, &FirebaseInterface::onIDTokenChanged);
+   //DISABLE_FIREGBASE QObject::connect(&authHandler, &FirebaseAuthHandler::userSignedIn, &firebaseInterface, &FirebaseInterface::onUserLoggedIn);
+   //DISABLE_FIREGBASE QObject::connect(&authHandler, &FirebaseAuthHandler::idTokenChanged, &firebaseInterface, &FirebaseInterface::onIDTokenChanged);
 
-   authHandler.signUserIn("Borgar.Ovsthus@technipfmc.com", "MyPassword");
+   //DISABLE_FIREGBASE authHandler.signUserIn("Borgar.Ovsthus@technipfmc.com", "MyPassword");
+
+   //----------------------------
+   // Build the Database
+   //----------------------------
+   QString dbErrorText;
+   SQLInterface sqlInterface;
+   bool hasDbError = sqlInterface.initializeDatabase();
+   if(hasDbError)
+   {
+      dbErrorText = sqlInterface.getErrorText();
+   }
 
    FelgoApplication felgo;
 
@@ -51,11 +64,21 @@ int main(int argc, char *argv[])
    QQmlApplicationEngine engine;
    felgo.initialize(&engine);
 
-   CppInterface cppInterface;
+   qmlRegisterUncreatableMetaObject(ProjectTypes::staticMetaObject, // static meta object
+                                    "com.borgarsoft.BorgarsWorkPunch",        // import statement
+                                    1, 0,                                     // major and minor version of the import
+                                    "ProjectTypes",                           // name in QML
+                                    "Error: only enums");                     // error in case someone tries to create a MyNamespace object
 
-   engine.rootContext()->setContextProperty("authHandler", &authHandler);
-   engine.rootContext()->setContextProperty("firebaseInterface", &firebaseInterface);
+
+   CppInterface cppInterface(&sqlInterface);
+
+   //DISABLE_FIREGBASE engine.rootContext()->setContextProperty("authHandler", &authHandler);
+   //DISABLE_FIREGBASE engine.rootContext()->setContextProperty("firebaseInterface", &firebaseInterface);
+   engine.rootContext()->setContextProperty("sqlInterface", &sqlInterface);
    engine.rootContext()->setContextProperty("cppInterface", &cppInterface);
+
+   QObject::connect(&app, &QApplication::applicationStateChanged, &cppInterface, &CppInterface::onApplicationStateChanged);
 
    // Set an optional license key from project file
    // This does not work if using Felgo Live, only for Felgo Cloud Builds and local builds

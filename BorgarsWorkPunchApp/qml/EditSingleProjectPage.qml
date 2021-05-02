@@ -1,6 +1,7 @@
 import QtQuick 2.12
 import QtQuick.Layouts 1.12
 import Felgo 3.0 as Felgo
+import com.borgarsoft.BorgarsWorkPunch 1.0
 
 
 Felgo.Page
@@ -12,10 +13,11 @@ Felgo.Page
    property bool isCreateProject : true
 
    property alias name : nameEdit.text
-   property string type: "Network"
+   property int type: ProjectTypes.Network
    property alias network : networkEdit.text
    property alias order : orderEdit.text
    property alias activity : activityEdit.text
+   property alias showOnHomePage : showOnHomePageSwitch.checked
 
 
    title: isCreateProject ? qsTr("New Project") : qsTr("Edit Project")
@@ -35,11 +37,12 @@ Felgo.Page
          {
             if(networkRadio.checked)
             {
-               firebaseInterface.addNewProject(nameEdit.text, "Network", networkEdit.text, parseInt(activityEdit.text))
+
+               sqlInterface.addNewProject(nameEdit.text, networkEdit.text, parseInt(activityEdit.text), ProjectTypes.Network, showOnHomePageSwitch.checked)     // TODO use enum for type
             }
             else
             {
-               firebaseInterface.addNewProject(nameEdit.text, "Order", orderEdit.text, parseInt(activityEdit.text))
+               sqlInterface.addNewProject(nameEdit.text, orderEdit.text, parseInt(activityEdit.text), ProjectTypes.Order, showOnHomePageSwitch.checked)       // TODO use enum for type
             }
          }
          //-----------------------
@@ -49,11 +52,11 @@ Felgo.Page
          {
             if(networkRadio.checked)
             {
-               firebaseInterface.updateProject(root.projectID, nameEdit.text, "Network", networkEdit.text, parseInt(activityEdit.text))
+               sqlInterface.updateProject(root.projectID, nameEdit.text, networkEdit.text, parseInt(activityEdit.text), ProjectTypes.Network, showOnHomePageSwitch.checked)    // TODO use enum for type
             }
             else
             {
-               firebaseInterface.updateProject(root.projectID, nameEdit.text, "Order", orderEdit.text, parseInt(activityEdit.text))
+               sqlInterface.updateProject(root.projectID, nameEdit.text, orderEdit.text, parseInt(activityEdit.text), ProjectTypes.Order, showOnHomePageSwitch.checked)      // TODO use enum for type
             }
          }
 
@@ -98,15 +101,15 @@ Felgo.Page
          borderWidth: dp(1)
          Layout.fillWidth: true
          //text: (root.type === CppInterface.Network) ? root.network : ""
-         enabled: root.type === "Network"
+         enabled: root.type === ProjectTypes.Network
       }
       Felgo.AppRadio
       {
          id: networkRadio
-         checked: root.type === "Network"
+         checked: root.type === ProjectTypes.Network
          onClicked:
          {
-            root.type = "Network"
+            root.type = ProjectTypes.Network
             root.order = ""
          }
          //checked: root.type === CppInterface.Network
@@ -122,15 +125,15 @@ Felgo.Page
          text: ""
          borderWidth: dp(1)
          Layout.fillWidth: true
-         enabled: root.type === "Order"
+         enabled: root.type === ProjectTypes.Order
       }
       Felgo.AppRadio
       {
          id: orderRadio
-         checked: root.type === "Order"
+         checked: root.type === ProjectTypes.Order
          onClicked:
          {
-            root.type = "Order"
+            root.type = ProjectTypes.Order
             root.network = ""
          }
          //checked: root.type === CppInterface.Order
@@ -148,12 +151,28 @@ Felgo.Page
          Layout.fillWidth: true
          Layout.columnSpan: 2
       }
+
+      //--------------------------------------------
+      // Activity
+      //--------------------------------------------
+      Felgo.AppText
+      {
+         text: qsTr("Show on home page")
+         Layout.columnSpan: 2
+      }
+      Felgo.AppSwitch
+      {
+         id: showOnHomePageSwitch
+         checked: true
+         //Layout.fillWidth: true
+         //Layout.columnSpan: 2
+      }
    }
 
    function clearData()
    {
       root.name = ""
-      root.type = "Network"
+      root.type = ProjectTypes.Network
       root.network = ""
       root.order = ""
       root.activity = ""

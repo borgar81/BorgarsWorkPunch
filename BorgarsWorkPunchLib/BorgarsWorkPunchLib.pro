@@ -1,5 +1,6 @@
 QT += gui
 QT += network
+QT += sql
 
 TEMPLATE = lib
 CONFIG += staticlib
@@ -23,6 +24,7 @@ SOURCES += \
    src/FirebaseAuthHandler.cpp \
    src/FirebaseInterface.cpp \
    src/ReportParser.cpp \
+   src/SQLInterface.cpp \
    src/TimeRegistration.cpp \
    src/Util.cpp \
    src/WeekReport.cpp \
@@ -35,6 +37,7 @@ HEADERS += \
    src/FirebaseAuthHandler.h \
    src/FirebaseInterface.h \
    src/ReportParser.h \
+   src/SQLInterface.h \
    src/TimeRegistration.h \
    src/Util.h \
    src/WeekReport.h \

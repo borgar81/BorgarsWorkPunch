@@ -69,7 +69,6 @@ class FirebaseInterface : public QObject
       Q_INVOKABLE void fetchReport(int year, int weekNumber);
 
       QVariantList getProjectList() const;
-
       void setProjectList(const QVariantList &projectList);
 
       void registerProjectWork(const QString &projectID, const QDateTime &startTimeUTC, const QDateTime &endTimeUTC);      // TODO Make private! Only public for testing with TestApplication

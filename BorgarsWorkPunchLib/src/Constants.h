@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QNetworkRequest>
+#include <qobjectdefs.h>
 
 namespace MessageTypes
 {
@@ -34,4 +35,15 @@ namespace WeekDays
       Saturday,
       Sunday
    };
+}
+
+namespace ProjectTypes
+{
+   Q_NAMESPACE
+   enum class ProjectTypesEnum
+   {
+      Network = 0,
+      Order
+   };
+   Q_ENUM_NS(ProjectTypesEnum)
 }

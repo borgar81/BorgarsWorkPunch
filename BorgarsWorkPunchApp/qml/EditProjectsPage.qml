@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Felgo 3.0 as Felgo
+import com.borgarsoft.BorgarsWorkPunch 1.0
 
 Felgo.ListPage
 {
@@ -10,6 +11,11 @@ Felgo.ListPage
       text: "Edit Projects"
       anchors.centerIn: parent
    }*/
+
+   onAppeared:
+   {
+      sqlInterface.fetchProjectList();
+   }
 
    rightBarItem: Felgo.IconButtonBarItem
    {
@@ -31,7 +37,7 @@ Felgo.ListPage
       delegate: Felgo.SimpleRow
       {
          text: model.Name
-         detailText: (model.Type === "Network" ? "Network: " + model.NetworkOrOrder : "Order: " + model.NetworkOrOrder) + " " + "Activity: " + model.Activity
+         detailText: (model.Type === ProjectTypes.Network ? "Network: " + model.NetworkOrOrder : "Order: " + model.NetworkOrOrder) + " " + "Activity: " + model.Activity
          onSelected:
          {
             navigationStack.push(subPage)
@@ -39,7 +45,7 @@ Felgo.ListPage
             navigationStack.currentPage.type = model.Type
             navigationStack.currentPage.isCreateProject = false
             navigationStack.currentPage.name = model.Name
-            if (model.Type === "Network")
+            if (model.Type === ProjectTypes.Network)
             {
                navigationStack.currentPage.network = model.NetworkOrOrder
             }
@@ -55,7 +61,7 @@ Felgo.ListPage
       {
          keyField: "Id"
          fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity"]
-         source: firebaseInterface.projectList
+         source: sqlInterface.projectList
       }
    }
 

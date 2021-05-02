@@ -3,13 +3,15 @@
 #include <QDesktopServices>
 
 // Local Includes
+#include "SQLInterface.h"
 #include "CppInterface.h"
 
-CppInterface::CppInterface(QObject *parent)
+CppInterface::CppInterface(SQLInterface *sqlinterface, QObject *parent)
    : QObject(parent)
 {
-
+   mSQLInterface = sqlinterface;
 }
+
 
 bool CppInterface::sendEmailReport()
 {
@@ -51,4 +53,22 @@ bool CppInterface::sendEmailReport()
    ok = QDesktopServices::openUrl(url);
 
    return ok;
+}
+
+/**
+ * SLOT. Called when the application state changes. Opens/Closes SQL connection
+ *
+ * @param state the new application state
+ */
+void CppInterface::onApplicationStateChanged(Qt::ApplicationState state)
+{
+   if (state == Qt::ApplicationSuspended)
+   {
+      mSQLInterface->closeDatabase();
+   }
+   else if (state == Qt::ApplicationActive)
+   {
+      mSQLInterface->openDatabase();
+      mSQLInterface->updateTotalTimeWorkedToday();
+   }
 }

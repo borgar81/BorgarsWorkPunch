@@ -50,11 +50,22 @@ Felgo.App
             }
          }
       }
+      Felgo.NavigationItem
+      {
+         title: "Report"
+         icon: Felgo.IconType.filetexto
+         Felgo.NavigationStack
+         {
+            DeveloperPage
+            {
+            }
+         }
+      }
    }
 
-   SignInPage
+   /*SignInPage
    {
       visible: authHandler.localID.length == 0
-   }
+   }*/
 
 }
