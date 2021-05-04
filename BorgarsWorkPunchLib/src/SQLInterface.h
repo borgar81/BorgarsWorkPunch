@@ -6,8 +6,11 @@
 #include <QTimer>
 //#include "PunchData.h"
 
+#include "WeekReport.h"
+#include "WeekReportModel.h"  // TODO Should this be forward declared?
+
+
 // Forward declarations
-class Project;
 
 /**
  * SQL Interface class
@@ -22,6 +25,9 @@ class SQLInterface : public QObject
    Q_PROPERTY(int activeProjectID READ getActiveProjectID WRITE setActiveProjectID NOTIFY activeProjectIDChanged);
    Q_PROPERTY(QVariantList projectList READ getProjectList NOTIFY projectListChanged);
    Q_PROPERTY(QTime totalWorkedTimeToday READ getTotalWorkedTimeToday  NOTIFY totalWorkedTimeTodayChanged);
+   Q_PROPERTY(WeekReport currentWeekReport READ getCurrentWeekReport NOTIFY currentWeekReportChanged)
+   Q_PROPERTY(WeekReportModel *currentWeekReportModel READ getCurrentWeekReportModel CONSTANT)
+
 
 
    signals:
@@ -31,6 +37,8 @@ class SQLInterface : public QObject
       void activeProjectIDChanged();
       void projectListChanged();
       void totalWorkedTimeTodayChanged();
+      void currentWeekReportChanged();
+
 
    private:
       QString mErrorText;
@@ -41,11 +49,16 @@ class SQLInterface : public QObject
       QTime mTotalWorkedTimeToday;
       QDateTime mPunchInTimestamp;
 
+      WeekReport mCurrentWeekReport;
+      WeekReportModel *mCurrentWeekReportModel;
+
+      /** Map containing ProjectIDs and Project Names. Key is ProjectID */
+      QMap<int, QString> mProjectIDCrossRefMap;
+
       bool createProjectsTable();
       bool createProjectRegHistoryTable();
       bool createCurrentStateTable();
       bool createDbVersionTable();
-
 
       bool registerProjectWork(int projectID, const QDateTime &startTimeUTC, const QDateTime &endTimeUTC);
       bool readCurrentStateFromSQL(int &projectID, QDateTime &startTimeUTC);
@@ -79,6 +92,7 @@ class SQLInterface : public QObject
 
       Q_INVOKABLE void fetchProjectList();
       Q_INVOKABLE void fetchCurrentState();
+      Q_INVOKABLE void fetchReport(const QDateTime &fromTimeLocalTime, const QDateTime &toTimeLocalTime);
 
       Q_INVOKABLE bool punchIn(int projectID);
       Q_INVOKABLE bool punchOut();
@@ -88,6 +102,8 @@ class SQLInterface : public QObject
       Q_INVOKABLE void deleteDatabase();
 
       Q_INVOKABLE void updateTotalTimeWorkedToday();
+
+      Q_INVOKABLE void insertTestData();
 
       QTime getPunchInTotal(const QDateTime &fromTimeUTC, const QDateTime &endTimeUTC) const;
       QTime getPunchInTotalForProject(int projectID, const QDateTime &fromTimeUTC, const QDateTime &endTimeUTC) const;
@@ -103,7 +119,10 @@ class SQLInterface : public QObject
       QVariantList getProjectList() const { return mProjectList; }
       void setProjectList(const QVariantList &projectList);
 
-
       QTime getTotalWorkedTimeToday() const { return mTotalWorkedTimeToday; }
       void setTotalWorkedTimeToday(const QTime &totalWorkedTimeToday);
+
+      WeekReport getCurrentWeekReport() const { return mCurrentWeekReport; }
+      WeekReportModel *getCurrentWeekReportModel() const { return mCurrentWeekReportModel; }
+
 };

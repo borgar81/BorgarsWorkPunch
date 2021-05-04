@@ -4,11 +4,14 @@
 #include <QDebug>
 #include <QDir>
 #include <QSqlError>
+#include <QSqlRecord>
 #include <QStandardPaths>
 #include <QDateTime>
 
 // Local Includes
 //#include "Project.h"
+#include "TimeRegistration.h"
+#include "WeekData.h"
 #include "SQLInterface.h"
 
 QString SQLInterface::PROJECTS_TABLE_NAME             = "projects";
@@ -27,6 +30,8 @@ SQLInterface::SQLInterface(QObject *parent)
    : QObject(parent)
 {
    mTotalWorkedTimeToday = QTime(0, 0, 0);
+
+   mCurrentWeekReportModel = new WeekReportModel(this);
 }
 
 /**
@@ -476,20 +481,29 @@ void SQLInterface::fetchProjectList()
 {
    QVariantList tmpList;
 
+   mProjectIDCrossRefMap.clear();
+
    // Get projects from SQL
    QSqlQuery query;
    query.exec(QStringLiteral("SELECT * FROM %1").arg(PROJECTS_TABLE_NAME));
    while(query.next())
    {
+      int projectID = query.value(0).toInt();
+      QString projectName = query.value(1).toString();
+
       QVariantMap map;
-      map["Id"] = query.value(0).toInt();
-      map["Name"] = query.value(1).toString();
+      map["Id"] = projectID;
+      map["Name"] = projectName;
       map["NetworkOrOrder"] = query.value(2).toString();
       map["Activity"] = query.value(3).toString();
       map["Type"] = query.value(4).toInt();
-      map["IncludeInHomePage"] = query.value(5).toInt();
+      map["IncludeInHomePage"] = query.value(5).toBool();
       tmpList << map;
+
+      mProjectIDCrossRefMap.insert(projectID, projectName);
    }
+
+   mCurrentWeekReportModel->updateProjectIDCrossRefMap(mProjectIDCrossRefMap);
 
    setProjectList(tmpList);
 }
@@ -497,6 +511,46 @@ void SQLInterface::fetchProjectList()
 void SQLInterface::fetchCurrentState()
 {
 
+}
+
+void SQLInterface::fetchReport(const QDateTime &fromTimeLocalTime, const QDateTime &toTimeLocalTime)
+{
+   //QList<TimeRegistration> timeRegistrationList;
+
+   WeekReport weekReport(fromTimeLocalTime.toUTC(), fromTimeLocalTime.toUTC());
+
+   // Get projects from SQL
+   QSqlQuery query;
+   query.exec(QStringLiteral("SELECT %1.projectID, name, punchIn, punchOut FROM %1 INNER JOIN %2 ON %2.projectID = %1.projectID").arg(PROJECT_REG_HISTORY_TABLE_NAME).arg(PROJECTS_TABLE_NAME));
+   while(query.next())
+   {
+      //qDebug() << query.record();
+      qDebug() << query.value(2).toDateTime();
+
+      int projectID = query.value(0).toInt();
+      QString projectName = query.value(1).toString();
+      QDateTime punchInTimeUTC = query.value(2).toDateTime();
+      QDateTime punchOutTimeUTC = query.value(3).toDateTime();
+
+      punchInTimeUTC.setTimeSpec(Qt::UTC);
+      punchOutTimeUTC.setTimeSpec(Qt::UTC);
+
+      DayReport &dayReport = weekReport.mDayReportList[punchInTimeUTC.date().dayOfWeek()-1];
+      dayReport.mTimeRegistrationList << TimeRegistration(projectID, projectName, punchInTimeUTC, punchOutTimeUTC);
+
+      //timeRegistrationList << TimeRegistration(projectID, projectName, punchIn, punchOut);
+
+      /*QVariantMap map;
+      map["Id"] = query.value(0).toInt();
+      map["Name"] = query.value(1).toString();
+      map["NetworkOrOrder"] = query.value(2).toString();
+      map["Activity"] = query.value(3).toString();
+      map["Type"] = query.value(4).toInt();
+      map["IncludeInHomePage"] = query.value(5).toBool();
+      tmpList << map;*/
+   }
+
+   mCurrentWeekReportModel->updateWeekReport(weekReport);
 }
 
 bool SQLInterface::punchIn(int projectID)
@@ -669,6 +723,42 @@ void SQLInterface::updateTotalTimeWorkedToday()
    qDebug() << "Todays Total: " <<  todaysTotal;
 
    setTotalWorkedTimeToday(todaysTotal);
+}
+
+void SQLInterface::insertTestData()
+{
+   addNewProject("Gjøa Nova", "GM50750000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true);          // 1
+   addNewProject("Gullfaks C", "GM50790000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true);         // 2
+   addNewProject("FCS320 Dev", "48002213", 217, (int)ProjectTypes::ProjectTypesEnum::Network, true);           // 3
+   addNewProject("Oseberg Sør", "GM50560000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true);        // 4
+   addNewProject("Morramøte", "318046", -1, (int)ProjectTypes::ProjectTypesEnum::Order, true);                 // 5
+
+   QDate monday = WeekData::getCurrentWeekStartDate();
+   QDate tuesday = monday.addDays(1);
+   QDate wednesday = monday.addDays(2);
+   QDate thursday = monday.addDays(3);
+   QDate friday = monday.addDays(4);
+   //QDate sunday = WeekData::getCurrentWeekEndDate();
+
+   // Monday
+   registerProjectWork(5, QDateTime(monday, QTime(8, 30, 0)).toUTC(), QDateTime(monday, QTime(9, 0, 0)).toUTC());       // Morramøte
+   registerProjectWork(1, QDateTime(monday, QTime(9, 0, 0)).toUTC(), QDateTime(monday, QTime(16, 0, 0)).toUTC());       // Gjøa
+
+   // Tuesday
+   registerProjectWork(2, QDateTime(tuesday, QTime(8, 30, 0)).toUTC(), QDateTime(tuesday, QTime(12, 0, 0)).toUTC());       // Gullfaks C
+   registerProjectWork(3, QDateTime(tuesday, QTime(12, 0, 0)).toUTC(), QDateTime(tuesday, QTime(14, 0, 0)).toUTC());       // FCS320 Dev
+   registerProjectWork(2, QDateTime(tuesday, QTime(14, 00, 0)).toUTC(), QDateTime(tuesday, QTime(18, 0, 0)).toUTC());       // Gullfaks C
+
+   // Wednesday
+   registerProjectWork(2, QDateTime(wednesday, QTime(8, 30, 0)).toUTC(), QDateTime(wednesday, QTime(16, 0, 0)).toUTC());       // Oseberg Sør
+
+   // Tuesday
+   registerProjectWork(2, QDateTime(thursday, QTime(8, 30, 0)).toUTC(), QDateTime(thursday, QTime(12, 0, 0)).toUTC());       // Gullfaks C
+   registerProjectWork(1, QDateTime(thursday, QTime(14, 00, 0)).toUTC(), QDateTime(thursday, QTime(18, 0, 0)).toUTC());      // Gjøa
+
+   // Friday
+   registerProjectWork(2, QDateTime(friday, QTime(8, 30, 0)).toUTC(), QDateTime(friday, QTime(16, 0, 0)).toUTC());       // Oseberg Sør
+
 }
 
 /**
@@ -862,3 +952,7 @@ void SQLInterface::setTotalWorkedTimeToday(const QTime &totalWorkedTimeToday)
       emit totalWorkedTimeTodayChanged();
    }
 }
+
+
+
+

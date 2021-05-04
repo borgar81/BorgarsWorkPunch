@@ -13,6 +13,7 @@
 #include "BorgarsWorkPunchLib/src/DayReport.h"
 #include "BorgarsWorkPunchLib/src/WeekReportModel.h"
 #include "BorgarsWorkPunchLib/src/SQLInterface.h"
+#include "BorgarsWorkPunchLib/src/WeekDatesModel.h"
 
 // uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 //#include <FelgoLiveClient>
@@ -70,6 +71,7 @@ int main(int argc, char *argv[])
                                     "ProjectTypes",                           // name in QML
                                     "Error: only enums");                     // error in case someone tries to create a MyNamespace object
 
+   qmlRegisterType<WeekDatesModel>("com.borgarsoft.BorgarsWorkPunch", 1, 0, "WeekDatesModel");
 
    CppInterface cppInterface(&sqlInterface);
 

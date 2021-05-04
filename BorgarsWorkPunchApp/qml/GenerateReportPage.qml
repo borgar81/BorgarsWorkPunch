@@ -13,7 +13,8 @@ Felgo.Page
 
    Component.onCompleted:
    {
-      firebaseInterface.fetchReport(2021, 15)
+      //firebaseInterface.fetchReport(2021, 15)
+      sqlInterface.fetchReport(cppInterface.getStartOfCurrentWeekDate(), cppInterface.getEndOfCurrentWeekDate())
    }
 
    Rectangle
@@ -33,17 +34,21 @@ Felgo.Page
       Felgo.IconButton
       {
          icon: Felgo.IconType.calendar
+         onClicked:
+         {
+            weekPickerDialog.open()
+         }
       }
 
       Felgo.AppText
       {
 
          id: periodLabel
-         text: "12.04.2021 - 18.04.2021"
+         text: "03.05.2021 - 09.05.2021"
          Layout.fillWidth: true
          horizontalAlignment: Text.AlignHCenter
          verticalAlignment: Text.AlignVCenter
-         //onClicked:
+
       }
       Felgo.IconButton
       {
@@ -72,7 +77,17 @@ Felgo.Page
          //iconSource: Felgo.IconType.edit
       }
 
-      model: firebaseInterface.currentWeekReportModel
+      model: sqlInterface.currentWeekReportModel
+   }
+
+   WeekPickerDialog
+   {
+      id: weekPickerDialog
+      onAccepted:
+      {
+         sqlInterface.fetchReport(startDate, endDate)
+      }
+
    }
 
 

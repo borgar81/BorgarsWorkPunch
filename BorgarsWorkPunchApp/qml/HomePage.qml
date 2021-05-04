@@ -36,6 +36,28 @@ Felgo.Page
       }
    }
 
+   Felgo.JsonListModel
+   {
+      id: dataModel
+      keyField: "Id"
+      fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity", "IncludeInHomePage"]
+      source: sqlInterface.projectList
+   }
+
+   /*Felgo.SortFilterProxyModel
+   {
+      id: proxyModel
+      sourceModel: dataModel
+      filters:
+      [
+         Felgo.ValueFilter
+         {
+            roleName: "IncludeInHomePage"
+            value: true
+         }
+      ]
+   }*/
+
    Felgo.AppListView
    {
       id: projectListView
@@ -49,6 +71,7 @@ Felgo.Page
       {
          style.showDisclosure: false
          text: model.Name
+         visible: model.IncludeInHomePage
          active:
          {
             if (sqlInterface.activeProjectID === -1)
@@ -76,12 +99,7 @@ Felgo.Page
          }
       }
 
-      model: Felgo.JsonListModel
-      {
-         keyField: "Id"
-         fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity"]
-         source: sqlInterface.projectList
-      }
+      model: dataModel
    }
 
    Felgo.AppButton

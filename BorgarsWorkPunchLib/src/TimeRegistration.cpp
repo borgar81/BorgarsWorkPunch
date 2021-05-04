@@ -3,16 +3,22 @@
 // Local Includes
 #include "TimeRegistration.h"
 
-QString TimeRegistration::getProjectID() const
+TimeRegistration::TimeRegistration(int projectID, const QString &projectName, const QDateTime &punchInUTC, const QDateTime &punchOutUTC)
+{
+   mProjectID = projectID;
+   mProjectName = projectName;
+   mPunchInTimeUTC = punchInUTC;
+   mPunchOutTimeUTC = punchOutUTC;
+}
+
+int TimeRegistration::getProjectID() const
 {
    return mProjectID;
 }
 
-TimeRegistration::TimeRegistration(const QString &projectID, const QDateTime &punchInUTC, const QDateTime &punchOutUTC)
+QString TimeRegistration::getProjectName() const
 {
-   mProjectID = projectID;
-   mPunchInTimeUTC = punchInUTC;
-   mPunchOutTimeUTC = punchOutUTC;
+   return mProjectName;
 }
 
 QDateTime TimeRegistration::getPunchInTimeUTC() const
@@ -24,3 +30,4 @@ QDateTime TimeRegistration::getPunchOutTimeUTC() const
 {
    return mPunchOutTimeUTC;
 }
+

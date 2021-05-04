@@ -45,6 +45,7 @@ Felgo.ListPage
             navigationStack.currentPage.type = model.Type
             navigationStack.currentPage.isCreateProject = false
             navigationStack.currentPage.name = model.Name
+
             if (model.Type === ProjectTypes.Network)
             {
                navigationStack.currentPage.network = model.NetworkOrOrder
@@ -54,13 +55,14 @@ Felgo.ListPage
                navigationStack.currentPage.order = model.NetworkOrOrder
             }
             navigationStack.currentPage.activity = model.Activity
+            navigationStack.currentPage.showOnHomePage = model.IncludeInHomePage
          }
       }
 
       model: Felgo.JsonListModel
       {
          keyField: "Id"
-         fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity"]
+         fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity", "IncludeInHomePage"]
          source: sqlInterface.projectList
       }
    }

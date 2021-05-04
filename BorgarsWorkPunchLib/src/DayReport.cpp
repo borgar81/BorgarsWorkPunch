@@ -38,7 +38,7 @@ quint64 DayReport::getTotalWorkTime() const
    return seconds;
 }
 
-QString DayReport::getDayReport(const QMap<QString, QString> &projectIDMap) const
+QString DayReport::getDayReport(const QMap<int, QString> &projectIDMap) const
 {
    QString reportString;
 
@@ -47,7 +47,7 @@ QString DayReport::getDayReport(const QMap<QString, QString> &projectIDMap) cons
    workTotalTime = workTotalTime.addSecs(getTotalWorkTime());
    reportString += QStringLiteral("   Total hours: %1\n").arg(workTotalTime.toString("h:mm"));
 
-   QMap<QString, quint64> projectWorkMap;
+   QMap<int, quint64> projectWorkMap;
 
    // Projects
    for (const TimeRegistration &timeReg : mTimeRegistrationList)

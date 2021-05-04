@@ -21,12 +21,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
    src/CppInterface.cpp \
    src/DayReport.cpp \
+   src/Formatter.cpp \
    src/FirebaseAuthHandler.cpp \
    src/FirebaseInterface.cpp \
    src/ReportParser.cpp \
    src/SQLInterface.cpp \
    src/TimeRegistration.cpp \
    src/Util.cpp \
+   src/WeekData.cpp \
+   src/WeekDatesModel.cpp \
    src/WeekReport.cpp \
    src/WeekReportModel.cpp
 
@@ -34,12 +37,15 @@ HEADERS += \
    src/Constants.h \
    src/CppInterface.h \
    src/DayReport.h \
+   src/Formatter.h \
    src/FirebaseAuthHandler.h \
    src/FirebaseInterface.h \
    src/ReportParser.h \
    src/SQLInterface.h \
    src/TimeRegistration.h \
    src/Util.h \
+   src/WeekData.h \
+   src/WeekDatesModel.h \
    src/WeekReport.h \
    src/WeekReportModel.h
 

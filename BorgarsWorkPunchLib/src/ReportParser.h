@@ -30,5 +30,7 @@ class ReportParser : public QObject
       WeekReport createWeekReport(const QDateTime &fromDateTimeUTC, const QDateTime &toDateTimeUTC);
 
 
+
+
 };
 

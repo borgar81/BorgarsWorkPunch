@@ -19,7 +19,7 @@ void WeekReportModel::updateWeekReport(const WeekReport &weekReport)
    endResetModel();
 }
 
-void WeekReportModel::updateProjectIDCrossRefMap(QMap<QString, QString> projectIDCrossRefMap)
+void WeekReportModel::updateProjectIDCrossRefMap(const QMap<int, QString> &projectIDCrossRefMap)
 {
    mProjectIDCrossRefMap = projectIDCrossRefMap;
 }

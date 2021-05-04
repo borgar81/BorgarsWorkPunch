@@ -67,7 +67,8 @@ DISTFILES += \
    qml/EditProjectsPage.qml \
    qml/EditSingleProjectPage.qml \
    qml/GenerateReport.qml \ \
-   qml/SignInPage.qml
+   qml/SignInPage.qml \
+   qml/WeekPickerDialog.qml
 
 HEADERS +=
 

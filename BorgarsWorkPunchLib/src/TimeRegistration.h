@@ -6,14 +6,16 @@
 class TimeRegistration
 {
    private:
-      QString mProjectID;
+      int mProjectID;
+      QString mProjectName;
       QDateTime mPunchInTimeUTC;
       QDateTime mPunchOutTimeUTC;
 
    public:
-      TimeRegistration(const QString &projectID, const QDateTime &punchInUTC, const QDateTime &punchOutUTC);
+      TimeRegistration(int projectID, const QString &projectName, const QDateTime &punchInUTC, const QDateTime &punchOutUTC);
 
+      int getProjectID() const;
+      QString getProjectName() const;
       QDateTime getPunchInTimeUTC() const;
       QDateTime getPunchOutTimeUTC() const;
-      QString getProjectID() const;
 };

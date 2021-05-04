@@ -6,7 +6,6 @@
 #include <QMap>
 
 #include "WeekReport.h"
-
 #include "WeekReportModel.h"  // TODO Should this be forward declared?
 
 class QNetworkReply;
@@ -81,7 +80,6 @@ class FirebaseInterface : public QObject
       void setLocalID(const QString &localID);
 
       WeekReport getCurrentWeekReport() const;
-
       WeekReportModel *getCurrentWeekReportModel() const;
 
 public Q_SLOTS:

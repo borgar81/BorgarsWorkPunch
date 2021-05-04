@@ -6,20 +6,34 @@ Felgo.Page
 {
    title: qsTr("Developer Zone")
 
-   Felgo.AppButton
+   Column
    {
-      text: "Delete DB"
       anchors.centerIn: parent
-      flat: false
-      onClicked:
+
+      Felgo.AppButton
       {
-         messageDialog.open()
+         text: "Delete DB"
+         flat: false
+         onClicked:
+         {
+            deleteDatabaseMessageBox.open()
+         }
+      }
+
+      Felgo.AppButton
+      {
+         text: "Insert TestData"
+         flat: false
+         onClicked:
+         {
+            insertTestDataMessageBox.open()
+         }
       }
    }
 
    QtDialogs.MessageDialog
    {
-      id: messageDialog
+      id: deleteDatabaseMessageBox
       icon: QtDialogs.StandardIcon.Question
       title: "Delete Database"
       text: "Are you sure?"
@@ -30,4 +44,19 @@ Felgo.Page
          navigationStack.pop();
       }
    }
+
+   QtDialogs.MessageDialog
+   {
+      id: insertTestDataMessageBox
+      icon: QtDialogs.StandardIcon.Question
+      title: "Insert Test-data"
+      text: "Are you sure?"
+      standardButtons: QtDialogs.StandardButton.Yes | QtDialogs.StandardButton.No
+      onYes:
+      {
+         sqlInterface.insertTestData();
+         navigationStack.pop();
+      }
+   }
+
 }

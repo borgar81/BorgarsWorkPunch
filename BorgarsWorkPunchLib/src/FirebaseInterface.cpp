@@ -206,7 +206,7 @@ void FirebaseInterface::onReplyFinished(QNetworkReply *reply)
          mProjectIDCrossRefMap.insert(it.key(), map.value("Name").toString());
       }
 
-      mCurrentWeekReportModel->updateProjectIDCrossRefMap(mProjectIDCrossRefMap);
+      // move to SQL mCurrentWeekReportModel->updateProjectIDCrossRefMap(mProjectIDCrossRefMap);
 
       setProjectList(tmpList);
    }

@@ -26,7 +26,7 @@ class WeekReport
       QDateTime getToDateTimeUTC() const;
 
       quint64 getTotalWorkTime(int day) const;
-      QString getDayReport(int day, const QMap<QString, QString> &projectIDMap) const;
+      QString getDayReport(int day, const QMap<int, QString> &projectIDMap) const;
 
 };
 

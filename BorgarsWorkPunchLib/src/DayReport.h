@@ -18,7 +18,7 @@ class DayReport
       QString getDayName() const;
 
       quint64 getTotalWorkTime() const;
-      QString getDayReport(const QMap<QString, QString> &projectIDMap) const;
+      QString getDayReport(const QMap<int, QString> &projectIDMap) const;
 };
 
 Q_DECLARE_METATYPE(DayReport)

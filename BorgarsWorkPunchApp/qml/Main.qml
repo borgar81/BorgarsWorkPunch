@@ -52,8 +52,8 @@ Felgo.App
       }
       Felgo.NavigationItem
       {
-         title: "Report"
-         icon: Felgo.IconType.filetexto
+         title: "Developer"
+         icon: Felgo.IconType.code
          Felgo.NavigationStack
          {
             DeveloperPage

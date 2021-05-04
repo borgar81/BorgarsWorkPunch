@@ -1,15 +1,5 @@
 #include "WeekReport.h"
 
-QDateTime WeekReport::getFromDateTimeUTC() const
-{
-   return mFromDateTimeUTC;
-}
-
-QDateTime WeekReport::getToDateTimeUTC() const
-{
-   return mToDateTimeUTC;
-}
-
 WeekReport::WeekReport()
 {
 
@@ -39,7 +29,17 @@ quint64 WeekReport::getTotalWorkTime(int day) const
    return mDayReportList.at(day).getTotalWorkTime();
 }
 
-QString WeekReport::getDayReport(int day, const QMap<QString, QString> &projectIDMap) const
+QString WeekReport::getDayReport(int day, const QMap<int, QString> &projectIDMap) const
 {
    return mDayReportList.at(day).getDayReport(projectIDMap);
+}
+
+QDateTime WeekReport::getFromDateTimeUTC() const
+{
+   return mFromDateTimeUTC;
+}
+
+QDateTime WeekReport::getToDateTimeUTC() const
+{
+   return mToDateTimeUTC;
 }

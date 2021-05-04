@@ -3,6 +3,7 @@
 #include <QDesktopServices>
 
 // Local Includes
+#include "WeekData.h"
 #include "SQLInterface.h"
 #include "CppInterface.h"
 
@@ -53,6 +54,33 @@ bool CppInterface::sendEmailReport()
    ok = QDesktopServices::openUrl(url);
 
    return ok;
+}
+
+/**
+ * @return Returns the week number of the todays date
+ */
+int CppInterface::getCurrentWeekNumber() const
+{
+   QDate date = QDate::currentDate();
+   return date.weekNumber();
+}
+
+/**
+ * @return the start datetime of the current week (in local time)
+ */
+QDateTime CppInterface::getStartOfCurrentWeekDate() const
+{
+   QDateTime startOfWeekDateTime(WeekData::getCurrentWeekStartDate(), QTime(0, 0, 0));
+   return startOfWeekDateTime;
+}
+
+/**
+ * @return the end datetime of the current week (in local time)
+ */
+QDateTime CppInterface::getEndOfCurrentWeekDate() const
+{
+   QDateTime endOfWeekDateTime(WeekData::getCurrentWeekEndDate(), QTime(23, 59, 59));
+   return endOfWeekDateTime;
 }
 
 /**

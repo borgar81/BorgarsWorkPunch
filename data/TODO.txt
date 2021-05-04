@@ -1,0 +1,4 @@
+
+* 7.5 hours is not the same as 7hours and 50minutes!
+
+* Total Counter is wrong when passing midnight

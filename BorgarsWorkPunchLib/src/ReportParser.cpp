@@ -66,21 +66,10 @@ bool ReportParser::isTimeRegInsideFromAndTo(const QDateTime &punchInUTC, const Q
 
 WeekReport ReportParser::createWeekReport(const QDateTime &fromDateTimeUTC, const QDateTime &toDateTimeUTC)
 {
-   //QMap<QString, DayReport> reportMap; // Key is Week day name
-
-   /*QList<DayReport> weekReportList;
-   weekReportList << DayReport(WeekDays::Monday);
-   weekReportList << DayReport(WeekDays::Tuesday);
-   weekReportList << DayReport(WeekDays::Wednesday);
-   weekReportList << DayReport(WeekDays::Thursday);
-   weekReportList << DayReport(WeekDays::Friday);
-   weekReportList << DayReport(WeekDays::Saturday);
-   weekReportList << DayReport(WeekDays::Sunday);
-   */
 
    WeekReport weekReport(fromDateTimeUTC, toDateTimeUTC);
 
-   QJsonObject rootObject = mJsonDocument.object();
+   /*QJsonObject rootObject = mJsonDocument.object();
    for (auto it = rootObject.begin(); it != rootObject.end(); it++)
    {
       QJsonObject timeRegObject = it.value().toObject();
@@ -99,7 +88,7 @@ WeekReport ReportParser::createWeekReport(const QDateTime &fromDateTimeUTC, cons
       DayReport &dayReport = weekReport.mDayReportList[punchInTimeUTC.date().dayOfWeek()-1];
 
       dayReport.mTimeRegistrationList << TimeRegistration(projectID, punchInTimeUTC, punchOutTimeUTC);
-   }
+   }*/
 
    return weekReport;
 

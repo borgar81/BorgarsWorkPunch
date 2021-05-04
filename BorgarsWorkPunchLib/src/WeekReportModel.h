@@ -10,7 +10,7 @@ class WeekReportModel : public QAbstractListModel
    private:
       WeekReport mWeekReport;
 
-      QMap<QString, QString> mProjectIDCrossRefMap;
+      QMap<int, QString> mProjectIDCrossRefMap;
 
    public:
       enum Roles
@@ -27,7 +27,7 @@ class WeekReportModel : public QAbstractListModel
 
       void updateWeekReport(const WeekReport &weekReport);
 
-      void updateProjectIDCrossRefMap(QMap<QString, QString> projectIDCrossRefMap);
+      void updateProjectIDCrossRefMap(const QMap<int, QString> &projectIDCrossRefMap);
 
       int rowCount(const QModelIndex &parent = QModelIndex()) const override;
       QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
