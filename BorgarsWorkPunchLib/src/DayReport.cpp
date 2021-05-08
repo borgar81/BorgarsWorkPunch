@@ -4,6 +4,7 @@
 #include <QDebug>
 
 // Local Includes
+#include "Formatter.h"
 #include "DayReport.h"
 
 QString DayReport::getDayName() const
@@ -43,9 +44,8 @@ QString DayReport::getDayReport(const QMap<int, QString> &projectIDMap) const
    QString reportString;
 
    // Total Work
-   QTime workTotalTime(0, 0);
-   workTotalTime = workTotalTime.addSecs(getTotalWorkTime());
-   reportString += QStringLiteral("   Total hours: %1\n").arg(workTotalTime.toString("h:mm"));
+   double totalWorkHours = getTotalWorkTime() / 3600.0;
+   reportString += QStringLiteral("   Total hours: %1\n").arg(QString::number(totalWorkHours, 'f', 2));
 
    QMap<int, quint64> projectWorkMap;
 
@@ -59,9 +59,10 @@ QString DayReport::getDayReport(const QMap<int, QString> &projectIDMap) const
    for (auto it = projectWorkMap.constBegin(); it != projectWorkMap.constEnd(); it++)
    {
       QString projectName = projectIDMap.value(it.key());
-      QTime workProjectTime(0, 0);
-      workProjectTime = workProjectTime.addSecs(it.value());
-      reportString += QStringLiteral("   %1: %2").arg(projectName, workProjectTime.toString("h:mm"));
+      //QTime workProjectTime(0, 0);
+      double workProjectHours = it.value() / 3600.0;
+      //workProjectTime = workProjectTime.addSecs(it.value());
+      reportString += QStringLiteral("   %1: %2").arg(projectName, QString::number(workProjectHours, 'f', 2));    // TODO Should this be an option
       if (it.key() != projectWorkMap.lastKey())
       {
          reportString += "\n";

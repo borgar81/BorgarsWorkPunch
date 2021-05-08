@@ -24,11 +24,9 @@ class SQLInterface : public QObject
 
    Q_PROPERTY(int activeProjectID READ getActiveProjectID WRITE setActiveProjectID NOTIFY activeProjectIDChanged);
    Q_PROPERTY(QVariantList projectList READ getProjectList NOTIFY projectListChanged);
-   Q_PROPERTY(QTime totalWorkedTimeToday READ getTotalWorkedTimeToday  NOTIFY totalWorkedTimeTodayChanged);
+   Q_PROPERTY(QString totalWorkedHoursToday READ getTotalWorkedHoursToday  NOTIFY totalWorkedHoursTodayChanged);
    Q_PROPERTY(WeekReport currentWeekReport READ getCurrentWeekReport NOTIFY currentWeekReportChanged)
    Q_PROPERTY(WeekReportModel *currentWeekReportModel READ getCurrentWeekReportModel CONSTANT)
-
-
 
    signals:
       void databaseDeleted();
@@ -36,7 +34,7 @@ class SQLInterface : public QObject
       void projectUpdated(int projectID);
       void activeProjectIDChanged();
       void projectListChanged();
-      void totalWorkedTimeTodayChanged();
+      void totalWorkedHoursTodayChanged();
       void currentWeekReportChanged();
 
 
@@ -46,7 +44,7 @@ class SQLInterface : public QObject
       int mActiveProjectID {-1};
       QVariantList mProjectList;
 
-      QTime mTotalWorkedTimeToday;
+      QString mTotalWorkedHoursToday;
       QDateTime mPunchInTimestamp;
 
       WeekReport mCurrentWeekReport;
@@ -105,7 +103,7 @@ class SQLInterface : public QObject
 
       Q_INVOKABLE void insertTestData();
 
-      QTime getPunchInTotal(const QDateTime &fromTimeUTC, const QDateTime &endTimeUTC) const;
+      quint32 getPunchInTotal(const QDateTime &fromTimeUTC, const QDateTime &endTimeUTC) const;
       QTime getPunchInTotalForProject(int projectID, const QDateTime &fromTimeUTC, const QDateTime &endTimeUTC) const;
 
       //QVector<PunchData> getPunchInDataForDate(const QDate &date) const;
@@ -119,8 +117,8 @@ class SQLInterface : public QObject
       QVariantList getProjectList() const { return mProjectList; }
       void setProjectList(const QVariantList &projectList);
 
-      QTime getTotalWorkedTimeToday() const { return mTotalWorkedTimeToday; }
-      void setTotalWorkedTimeToday(const QTime &totalWorkedTimeToday);
+      QString getTotalWorkedHoursToday() const { return mTotalWorkedHoursToday; }
+      void setTotalWorkedHoursToday(const QString &totalWorkedHoursToday);
 
       WeekReport getCurrentWeekReport() const { return mCurrentWeekReport; }
       WeekReportModel *getCurrentWeekReportModel() const { return mCurrentWeekReportModel; }

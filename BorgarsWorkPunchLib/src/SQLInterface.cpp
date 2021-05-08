@@ -29,7 +29,7 @@ const QString DATABASE_FILENAME = "BorgarsWorkPunch.sqlite3";
 SQLInterface::SQLInterface(QObject *parent)
    : QObject(parent)
 {
-   mTotalWorkedTimeToday = QTime(0, 0, 0);
+   mTotalWorkedHoursToday = QStringLiteral("0.00");
 
    mCurrentWeekReportModel = new WeekReportModel(this);
 }
@@ -718,11 +718,10 @@ void SQLInterface::updateTotalTimeWorkedToday()
    QDateTime todayStart(QDate::currentDate(), QTime(0, 0, 0));
    QDateTime todayEnd(QDate::currentDate(), QTime(23, 59, 59));
 
-   QTime todaysTotal = getPunchInTotal(todayStart.toUTC(), todayEnd.toUTC());
+   quint32 todaysTotalSeconds = getPunchInTotal(todayStart.toUTC(), todayEnd.toUTC());
 
-   qDebug() << "Todays Total: " <<  todaysTotal;
-
-   setTotalWorkedTimeToday(todaysTotal);
+   QString todaysTotalSecondsStr = QString::number(todaysTotalSeconds / 3600., 'f', 2);
+   setTotalWorkedHoursToday(todaysTotalSecondsStr);
 }
 
 void SQLInterface::insertTestData()
@@ -738,7 +737,8 @@ void SQLInterface::insertTestData()
    QDate wednesday = monday.addDays(2);
    QDate thursday = monday.addDays(3);
    QDate friday = monday.addDays(4);
-   //QDate sunday = WeekData::getCurrentWeekEndDate();
+   QDate saturday = monday.addDays(5);
+   QDate sunday = WeekData::getCurrentWeekEndDate();
 
    // Monday
    registerProjectWork(5, QDateTime(monday, QTime(8, 30, 0)).toUTC(), QDateTime(monday, QTime(9, 0, 0)).toUTC());       // Morramøte
@@ -758,6 +758,9 @@ void SQLInterface::insertTestData()
 
    // Friday
    registerProjectWork(2, QDateTime(friday, QTime(8, 30, 0)).toUTC(), QDateTime(friday, QTime(16, 0, 0)).toUTC());       // Oseberg Sør
+
+   // Saturday
+   registerProjectWork(2, QDateTime(saturday, QTime(12, 00, 0)).toUTC(), QDateTime(saturday, QTime(16, 30, 0)).toUTC());       // Oseberg Sør
 
 }
 
@@ -795,11 +798,11 @@ bool SQLInterface::readCurrentStateFromSQL(int &projectID, QDateTime &startTimeU
  * @param fromTimeUTC from time in UTC
  * @param endTimeUTC from time in UTC
  *
- * @return time used
+ * @return number of seconds worked between fromTime and endTime
  */
-QTime SQLInterface::getPunchInTotal(const QDateTime &fromTimeUTC, const QDateTime &endTimeUTC) const
+quint32 SQLInterface::getPunchInTotal(const QDateTime &fromTimeUTC, const QDateTime &endTimeUTC) const
 {
-   QTime totalTime(0, 0, 0);
+   quint32 totalSecondsCount = 0;
 
    QSqlQuery query;
 
@@ -810,13 +813,13 @@ QTime SQLInterface::getPunchInTotal(const QDateTime &fromTimeUTC, const QDateTim
    if(!ok)
    {
       qDebug() << QStringLiteral("SQLInterface::getPunchInTotal: Failed to query database: %1").arg(query.lastError().text());
-      return QTime(0, 0);
+      return 0;
    }
 
    while(query.next())
    {
       quint32 secs = query.value(1).toDateTime().toTime_t() - query.value(0).toDateTime().toTime_t();
-      totalTime = totalTime.addSecs(secs);
+      totalSecondsCount += secs;
    }
 
    // Add current if we're punched in
@@ -829,12 +832,12 @@ QTime SQLInterface::getPunchInTotal(const QDateTime &fromTimeUTC, const QDateTim
          if(startTime > 0)
          {
             quint32 secs = QDateTime::currentDateTimeUtc().toTime_t() - query.value(1).toDateTime().toTime_t();
-            totalTime = totalTime.addSecs(secs);
+            totalSecondsCount += secs;
          }
       }
    }
 
-   return totalTime;
+   return totalSecondsCount;
 }
 
 /**
@@ -944,12 +947,12 @@ void SQLInterface::setProjectList(const QVariantList &projectList)
       emit projectListChanged();
    }
 }
-void SQLInterface::setTotalWorkedTimeToday(const QTime &totalWorkedTimeToday)
+void SQLInterface::setTotalWorkedHoursToday(const QString &totalWorkedHoursToday)
 {
-   if (totalWorkedTimeToday != mTotalWorkedTimeToday)
+   if (totalWorkedHoursToday != mTotalWorkedHoursToday)
    {
-      mTotalWorkedTimeToday = totalWorkedTimeToday;
-      emit totalWorkedTimeTodayChanged();
+      mTotalWorkedHoursToday = totalWorkedHoursToday;
+      emit totalWorkedHoursTodayChanged();
    }
 }
 

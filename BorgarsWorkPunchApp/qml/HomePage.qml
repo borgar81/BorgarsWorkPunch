@@ -16,7 +16,7 @@ Felgo.Page
    {
       id: todayCounterText
       //text: "Today: " + "0:00"
-      text: "Today: " + Qt.formatTime(sqlInterface.totalWorkedTimeToday, "h:mm")
+      text: qsTr("Today: ") + sqlInterface.totalWorkedHoursToday
       anchors.left: parent.left
       anchors.top: parent.top
       anchors.leftMargin: 10

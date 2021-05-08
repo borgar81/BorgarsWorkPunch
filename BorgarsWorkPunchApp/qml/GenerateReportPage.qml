@@ -87,8 +87,5 @@ Felgo.Page
       {
          sqlInterface.fetchReport(startDate, endDate)
       }
-
    }
-
-
 }
