@@ -39,7 +39,14 @@ quint64 DayReport::getTotalWorkTime() const
    return seconds;
 }
 
-QString DayReport::getDayReport(const QMap<int, QString> &projectIDMap) const
+/**
+ * Creates a Day report string showing the the total for the day and the total for each project
+ *
+ * @param projectIDMap crossref map for ProjectID and project name
+ *
+ * @return day totals report as string
+ */
+QString DayReport::getDayReportTotals(const QMap<int, QString> &projectIDMap) const
 {
    QString reportString;
 
@@ -59,11 +66,38 @@ QString DayReport::getDayReport(const QMap<int, QString> &projectIDMap) const
    for (auto it = projectWorkMap.constBegin(); it != projectWorkMap.constEnd(); it++)
    {
       QString projectName = projectIDMap.value(it.key());
-      //QTime workProjectTime(0, 0);
       double workProjectHours = it.value() / 3600.0;
-      //workProjectTime = workProjectTime.addSecs(it.value());
-      reportString += QStringLiteral("   %1: %2").arg(projectName, QString::number(workProjectHours, 'f', 2));    // TODO Should this be an option
+      reportString += QStringLiteral("   %1: %2").arg(projectName, QString::number(workProjectHours, 'f', 2));
       if (it.key() != projectWorkMap.lastKey())
+      {
+         reportString += "\n";
+      }
+   }
+
+   return reportString;
+}
+
+/**
+ * Creates a Day report string showing all the PunchIn/PunchOuts for the day
+ *
+ * @param projectIDMap crossref map for ProjectID and project name
+ *
+ * @return day totals report as string
+ */
+QString DayReport::getDayReportPunchIns() const
+{
+   QString reportString;
+
+   // Total Work
+   double totalWorkHours = getTotalWorkTime() / 3600.0;
+   reportString += QStringLiteral("   Total hours: %1\n").arg(QString::number(totalWorkHours, 'f', 2));
+
+   // Projects
+   for (const TimeRegistration &timeReg : mTimeRegistrationList)
+   {
+      reportString += QString("   %1: %2 - %3").arg(timeReg.getProjectName(), timeReg.getPunchInTimeUTC().toLocalTime().toString("hh:mm"), timeReg.getPunchOutTimeUTC().toLocalTime().toString("hh:mm"));
+
+      if (&timeReg != &mTimeRegistrationList.last())
       {
          reportString += "\n";
       }

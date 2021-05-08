@@ -47,3 +47,14 @@ namespace ProjectTypes
    };
    Q_ENUM_NS(ProjectTypesEnum)
 }
+
+namespace WeekReportTypes
+{
+   Q_NAMESPACE
+   enum WeekReportTypesEnum
+   {
+      Totals = 0,
+      PunchIns
+   };
+   Q_ENUM_NS(WeekReportTypesEnum)
+}

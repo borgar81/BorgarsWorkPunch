@@ -1,15 +1,14 @@
 import QtQuick 2.0
 import Felgo 3.0 as Felgo
 import QtQuick.Layouts 1.12
+import com.borgarsoft.BorgarsWorkPunch 1.0
+
 
 Felgo.Page
 {
-   title: qsTr("Generate Report")
-   Felgo.AppText
-   {
-      text: "Report page"
-      anchors.centerIn: parent
-   }
+   id: root
+
+   title: qsTr("Week Report")
 
    Component.onCompleted:
    {
@@ -21,9 +20,7 @@ Felgo.Page
    {
       color: "lightgray"
       anchors.fill: headerRow
-
    }
-
 
    RowLayout
    {
@@ -63,9 +60,10 @@ Felgo.Page
 
    Felgo.AppListView
    {
+      id: detailedReportView
       anchors.topMargin: dp(10)
       anchors.top: headerRow.bottom
-      anchors.bottom: parent.bottom
+      anchors.bottom: reportTypeButtonRow.top
       anchors.left: parent.left
       anchors.right: parent.right
 
@@ -74,10 +72,32 @@ Felgo.Page
          style.showDisclosure: false
          text: model.WeekDayName
          detailText: model.WeekReportDay
-         //iconSource: Felgo.IconType.edit
       }
-
       model: sqlInterface.currentWeekReportModel
+   }
+
+   Felgo.AppTabBar
+   {
+      id: reportTypeButtonRow
+      //anchors.left: parent.left
+      //anchors.right: parent.right
+      anchors.bottom: parent.bottom
+      Felgo.AppTabButton
+      {
+         text: qsTr("Hour totals")
+         onClicked:
+         {
+            sqlInterface.currentWeekReportModel.reportFormat = WeekReportTypes.Totals
+         }
+      }
+      Felgo.AppTabButton
+      {
+         text: qsTr("Punch-Ins")
+         onClicked:
+         {
+            sqlInterface.currentWeekReportModel.reportFormat = WeekReportTypes.PunchIns
+         }
+      }
    }
 
    WeekPickerDialog
@@ -85,6 +105,7 @@ Felgo.Page
       id: weekPickerDialog
       onAccepted:
       {
+         periodLabel.text = Qt.formatDate(startDate, "dd.MM.yyyy") + " - " + Qt.formatDate(endDate, "dd.MM.yyyy")
          sqlInterface.fetchReport(startDate, endDate)
       }
    }

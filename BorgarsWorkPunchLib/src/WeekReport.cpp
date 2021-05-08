@@ -29,9 +29,14 @@ quint64 WeekReport::getTotalWorkTime(int day) const
    return mDayReportList.at(day).getTotalWorkTime();
 }
 
-QString WeekReport::getDayReport(int day, const QMap<int, QString> &projectIDMap) const
+QString WeekReport::getDayReportTotals(int day, const QMap<int, QString> &projectIDMap) const
 {
-   return mDayReportList.at(day).getDayReport(projectIDMap);
+   return mDayReportList.at(day).getDayReportTotals(projectIDMap);
+}
+
+QString WeekReport::getDayReportPunchIns(int day) const
+{
+   return mDayReportList.at(day).getDayReportPunchIns();
 }
 
 QDateTime WeekReport::getFromDateTimeUTC() const

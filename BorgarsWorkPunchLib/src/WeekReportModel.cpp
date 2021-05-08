@@ -44,7 +44,14 @@ QVariant WeekReportModel::data(const QModelIndex &index, int role) const
    }
    else if (role == WeekReportDay)
    {
-      return mWeekReport.getDayReport(index.row(), mProjectIDCrossRefMap);
+      if (mReportFormat == WeekReportTypes::WeekReportTypesEnum::Totals)
+      {
+         return mWeekReport.getDayReportTotals(index.row(), mProjectIDCrossRefMap);
+      }
+      else
+      {
+         return mWeekReport.getDayReportPunchIns(index.row());
+      }
    }
 
    return QVariant();
@@ -59,4 +66,21 @@ QHash<int, QByteArray> WeekReportModel::roleNames() const
    roles[TotalWorkTimeDay] = "TotalWorkTimeDay";
    roles[WeekReportDay] = "WeekReportDay";
    return roles;
+}
+
+/**
+ * Sets the report format this model should return (Totals or Hours)
+ *
+ * @param reportType the report type. @see WeekReportTypes::WeekReportTypesEnum
+ */
+void WeekReportModel::setReportFormat(WeekReportTypes::WeekReportTypesEnum reportFormat)
+{
+   if (reportFormat != mReportFormat)
+   {
+      mReportFormat = reportFormat;
+
+      QModelIndex topLeft = this->index(0);
+      QModelIndex bottomRight = this->index(rowCount()-1);
+      emit dataChanged(topLeft, bottomRight);
+   }
 }

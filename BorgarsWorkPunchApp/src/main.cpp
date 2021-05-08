@@ -65,10 +65,16 @@ int main(int argc, char *argv[])
    QQmlApplicationEngine engine;
    felgo.initialize(&engine);
 
-   qmlRegisterUncreatableMetaObject(ProjectTypes::staticMetaObject, // static meta object
+   qmlRegisterUncreatableMetaObject(ProjectTypes::staticMetaObject,           // static meta object
                                     "com.borgarsoft.BorgarsWorkPunch",        // import statement
                                     1, 0,                                     // major and minor version of the import
                                     "ProjectTypes",                           // name in QML
+                                    "Error: only enums");                     // error in case someone tries to create a MyNamespace object
+
+   qmlRegisterUncreatableMetaObject(WeekReportTypes::staticMetaObject,        // static meta object
+                                    "com.borgarsoft.BorgarsWorkPunch",        // import statement
+                                    1, 0,                                     // major and minor version of the import
+                                    "WeekReportTypes",                        // name in QML
                                     "Error: only enums");                     // error in case someone tries to create a MyNamespace object
 
    qmlRegisterType<WeekDatesModel>("com.borgarsoft.BorgarsWorkPunch", 1, 0, "WeekDatesModel");

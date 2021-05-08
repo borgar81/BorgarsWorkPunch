@@ -521,7 +521,10 @@ void SQLInterface::fetchReport(const QDateTime &fromTimeLocalTime, const QDateTi
 
    // Get projects from SQL
    QSqlQuery query;
-   query.exec(QStringLiteral("SELECT %1.projectID, name, punchIn, punchOut FROM %1 INNER JOIN %2 ON %2.projectID = %1.projectID").arg(PROJECT_REG_HISTORY_TABLE_NAME).arg(PROJECTS_TABLE_NAME));
+   query.exec(QStringLiteral("SELECT %1.projectID, name, punchIn, punchOut FROM %1 INNER JOIN %2 ON %2.projectID = %1.projectID").
+              arg(PROJECT_REG_HISTORY_TABLE_NAME)
+              .arg(PROJECTS_TABLE_NAME));
+
    while(query.next())
    {
       //qDebug() << query.record();
