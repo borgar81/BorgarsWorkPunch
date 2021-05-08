@@ -11,6 +11,7 @@ Felgo.Dialog
    property date endDate
 
 
+   //autoSize: true
    title: qsTr("Select week")
    positiveActionLabel: qsTr("OK")
    negativeActionLabel: qsTr("Cancel")
@@ -36,6 +37,8 @@ Felgo.Dialog
       {
          id: weekModel
       }
+      anchors.top: parent.top
+      anchors.bottom: parent.bottom
       //visibleItemCount: 5
       anchors.left: parent.left
       anchors.right: parent.right

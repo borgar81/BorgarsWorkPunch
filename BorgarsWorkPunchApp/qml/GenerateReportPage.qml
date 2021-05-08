@@ -30,10 +30,10 @@ Felgo.Page
 
       Felgo.IconButton
       {
-         icon: Felgo.IconType.calendar
+         icon: Felgo.IconType.envelope
          onClicked:
          {
-            weekPickerDialog.open()
+            cppInterface.sendEmailReport();
          }
       }
 
@@ -45,17 +45,15 @@ Felgo.Page
          Layout.fillWidth: true
          horizontalAlignment: Text.AlignHCenter
          verticalAlignment: Text.AlignVCenter
-
       }
       Felgo.IconButton
       {
-         icon: Felgo.IconType.envelope
+         icon: Felgo.IconType.calendar
          onClicked:
          {
-            cppInterface.sendEmailReport();
+            weekPickerDialog.open()
          }
       }
-
    }
 
    Felgo.AppListView

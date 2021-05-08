@@ -1,4 +1,4 @@
 
-* 7.5 hours is not the same as 7hours and 50minutes!
+DONE! * 7.5 hours is not the same as 7hours and 50minutes!
 
-* Total Counter is wrong when passing midnight
+* Total Counter is wrong when passing midnight. Should automatically punchOut, punchIn when passing midnight

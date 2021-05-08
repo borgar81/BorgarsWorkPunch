@@ -517,13 +517,20 @@ void SQLInterface::fetchReport(const QDateTime &fromTimeLocalTime, const QDateTi
 {
    //QList<TimeRegistration> timeRegistrationList;
 
-   WeekReport weekReport(fromTimeLocalTime.toUTC(), fromTimeLocalTime.toUTC());
+   QDateTime fromTimeUTC = fromTimeLocalTime.toUTC();
+   QDateTime toTimeUTC = toTimeLocalTime.toUTC();
+
+   WeekReport weekReport(fromTimeUTC, toTimeUTC);
 
    // Get projects from SQL
+   QString queryStr = QStringLiteral("SELECT %1.projectID, name, punchIn, punchOut FROM %1 INNER JOIN %2 ON %2.projectID = %1.projectID WHERE punchIn >= '%3' AND punchIn < '%4' AND punchout >= '%3' AND punchout < '%4' ").
+         arg(PROJECT_REG_HISTORY_TABLE_NAME)
+         .arg(PROJECTS_TABLE_NAME)
+         .arg(fromTimeUTC.toString(Qt::ISODate))
+         .arg(toTimeUTC.toString(Qt::ISODate));
+
    QSqlQuery query;
-   query.exec(QStringLiteral("SELECT %1.projectID, name, punchIn, punchOut FROM %1 INNER JOIN %2 ON %2.projectID = %1.projectID").
-              arg(PROJECT_REG_HISTORY_TABLE_NAME)
-              .arg(PROJECTS_TABLE_NAME));
+   query.exec(queryStr);
 
    while(query.next())
    {
