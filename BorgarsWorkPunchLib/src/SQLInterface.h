@@ -25,6 +25,7 @@ class SQLInterface : public QObject
    Q_PROPERTY(int activeProjectID READ getActiveProjectID WRITE setActiveProjectID NOTIFY activeProjectIDChanged);
    Q_PROPERTY(QVariantList projectList READ getProjectList NOTIFY projectListChanged);
    Q_PROPERTY(QString totalWorkedHoursToday READ getTotalWorkedHoursToday  NOTIFY totalWorkedHoursTodayChanged);
+   Q_PROPERTY(QString totalWorkedHoursWeek READ getTotalWorkedHoursWeek  NOTIFY totalWorkedHoursWeekChanged);
    Q_PROPERTY(WeekReport currentWeekReport READ getCurrentWeekReport NOTIFY currentWeekReportChanged)
    Q_PROPERTY(WeekReportModel *currentWeekReportModel READ getCurrentWeekReportModel CONSTANT)
 
@@ -35,8 +36,8 @@ class SQLInterface : public QObject
       void activeProjectIDChanged();
       void projectListChanged();
       void totalWorkedHoursTodayChanged();
+      void totalWorkedHoursWeekChanged();
       void currentWeekReportChanged();
-
 
    private:
       QString mErrorText;
@@ -45,6 +46,7 @@ class SQLInterface : public QObject
       QVariantList mProjectList;
 
       QString mTotalWorkedHoursToday;
+      QString mTotalWorkedHoursWeek;
       QDateTime mPunchInTimestamp;
 
       WeekReport mCurrentWeekReport;
@@ -119,6 +121,9 @@ class SQLInterface : public QObject
 
       QString getTotalWorkedHoursToday() const { return mTotalWorkedHoursToday; }
       void setTotalWorkedHoursToday(const QString &totalWorkedHoursToday);
+
+      QString getTotalWorkedHoursWeek() const { return mTotalWorkedHoursWeek; }
+      void setTotalWorkedHoursWeek(const QString &totalWorkedHoursWeek);
 
       WeekReport getCurrentWeekReport() const { return mCurrentWeekReport; }
       WeekReportModel *getCurrentWeekReportModel() const { return mCurrentWeekReportModel; }

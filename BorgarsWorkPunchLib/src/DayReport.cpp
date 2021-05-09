@@ -12,6 +12,11 @@ QString DayReport::getDayName() const
    return mDayName;
 }
 
+WeekDays::WeekDaysEnum DayReport::getWeekDay() const
+{
+   return mWeekDay;
+}
+
 DayReport::DayReport()
 {
    mDayName = Util::getDayOfWeekAsText(mWeekDay);

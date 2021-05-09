@@ -10,9 +10,8 @@ Felgo.Page
 
    title: qsTr("Week Report")
 
-   Component.onCompleted:
+   onAppeared:
    {
-      //firebaseInterface.fetchReport(2021, 15)
       sqlInterface.fetchReport(cppInterface.getStartOfCurrentWeekDate(), cppInterface.getEndOfCurrentWeekDate())
    }
 
@@ -56,11 +55,23 @@ Felgo.Page
       }
    }
 
+   Felgo.AppText
+   {
+
+      id: weekTotalHoursText
+      text: "Week Total: " + sqlInterface.totalWorkedHoursWeek
+      anchors.top: headerRow.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+      horizontalAlignment: Text.AlignHCenter
+      verticalAlignment: Text.AlignVCenter
+   }
+
    Felgo.AppListView
    {
       id: detailedReportView
       anchors.topMargin: dp(10)
-      anchors.top: headerRow.bottom
+      anchors.top: weekTotalHoursText.bottom
       anchors.bottom: reportTypeButtonRow.top
       anchors.left: parent.left
       anchors.right: parent.right

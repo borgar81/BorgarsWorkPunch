@@ -19,12 +19,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+   src/email.cpp \
+   src/mimetypemanager.cpp \
    src/CppInterface.cpp \
    src/DayReport.cpp \
    src/Formatter.cpp \
    src/FirebaseAuthHandler.cpp \
    src/FirebaseInterface.cpp \
    src/ReportParser.cpp \
+   src/smtp.cpp \
    src/SQLInterface.cpp \
    src/TimeRegistration.cpp \
    src/Util.cpp \
@@ -34,6 +37,9 @@ SOURCES += \
    src/WeekReportModel.cpp
 
 HEADERS += \
+   src/email_p.h \
+   src/email.h \
+   src/mimetypemanager.h \
    src/Constants.h \
    src/CppInterface.h \
    src/DayReport.h \
@@ -41,6 +47,7 @@ HEADERS += \
    src/FirebaseAuthHandler.h \
    src/FirebaseInterface.h \
    src/ReportParser.h \
+   src/smtp.h \
    src/SQLInterface.h \
    src/TimeRegistration.h \
    src/Util.h \

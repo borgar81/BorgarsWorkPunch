@@ -20,6 +20,7 @@ class DayReport
       quint64 getTotalWorkTime() const;
       QString getDayReportTotals(const QMap<int, QString> &projectIDMap) const;
       QString getDayReportPunchIns() const;
+      WeekDays::WeekDaysEnum getWeekDay() const;
 };
 
 Q_DECLARE_METATYPE(DayReport)

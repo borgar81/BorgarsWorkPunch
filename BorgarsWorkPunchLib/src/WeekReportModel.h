@@ -29,7 +29,6 @@ public:
          SizeRole
       };
 
-
       WeekReportModel(QObject *parent=nullptr);
 
       void updateWeekReport(const WeekReport &weekReport);

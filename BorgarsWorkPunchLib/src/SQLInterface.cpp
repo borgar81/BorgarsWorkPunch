@@ -560,6 +560,9 @@ void SQLInterface::fetchReport(const QDateTime &fromTimeLocalTime, const QDateTi
       tmpList << map;*/
    }
 
+   QString weekTotalSecondsStr = QString::number(weekReport.getWeekTotalHours() / 3600., 'f', 2);
+   setTotalWorkedHoursWeek(weekTotalSecondsStr);
+
    mCurrentWeekReportModel->updateWeekReport(weekReport);
 }
 
@@ -636,17 +639,6 @@ bool SQLInterface::punchOut(const QDateTime &endTimeUTC)
 
    int projectID = -1;
    readCurrentStateFromSQL(projectID, projectStartTimeUTC);
-
-
-   // Add Punch-in History
-   if(!query.exec(QStringLiteral("INSERT INTO %1(punchIn, punchOut) VALUES('%2', '%3')")
-                  .arg(PROJECT_REG_HISTORY_TABLE_NAME)
-                  .arg(punchInTimeUTC.toString(Qt::ISODate))
-                  .arg(endTimeUTC.toString(Qt::ISODate))))
-   {
-      qDebug() << QStringLiteral("Failed to query database: %1").arg(query.lastError().text());
-      return false;
-   }
 
    // Add ProjectReg History
    registerProjectWork(projectID,  projectStartTimeUTC, endTimeUTC);
@@ -771,6 +763,9 @@ void SQLInterface::insertTestData()
 
    // Saturday
    registerProjectWork(2, QDateTime(saturday, QTime(12, 00, 0)).toUTC(), QDateTime(saturday, QTime(16, 30, 0)).toUTC());       // Oseberg Sør
+
+   // Sunday
+   registerProjectWork(1, QDateTime(sunday, QTime(10, 00, 0)).toUTC(), QDateTime(sunday, QTime(15, 30, 0)).toUTC());       // Gjøa
 
 }
 
@@ -963,6 +958,15 @@ void SQLInterface::setTotalWorkedHoursToday(const QString &totalWorkedHoursToday
    {
       mTotalWorkedHoursToday = totalWorkedHoursToday;
       emit totalWorkedHoursTodayChanged();
+   }
+}
+
+void SQLInterface::setTotalWorkedHoursWeek(const QString &totalWorkedHoursWeek)
+{
+   if (totalWorkedHoursWeek != mTotalWorkedHoursWeek)
+   {
+      mTotalWorkedHoursWeek = totalWorkedHoursWeek;
+      emit totalWorkedHoursWeekChanged();
    }
 }
 
