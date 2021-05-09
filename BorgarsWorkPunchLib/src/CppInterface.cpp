@@ -72,11 +72,15 @@ bool CppInterface::sendEmailReport()
 
    return ok;*/
 
+   // https://docs.fileformat.com/email/emlx/
+   // https://docs.fileformat.com/email/msg/
+   // https://docs.fileformat.com/email/eml/
+
    Email email(nullptr, "");
    email.setSenderAddress("borgar.ovsthus@technipfmc.com");
    email.setReceiverAddress("borgar.ovsthus@technipfmc.com");
    email.setSubject("Week report");
-   email.setMessageText("This is      a   test.\tTag");
+   email.setMessageText("This is      a   test.Tag");
    email.openInDefaultProgram();
 
    return true;
