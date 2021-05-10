@@ -75,6 +75,7 @@ bool CppInterface::sendEmailReport()
    // https://docs.fileformat.com/email/emlx/
    // https://docs.fileformat.com/email/msg/
    // https://docs.fileformat.com/email/eml/
+   // https://blog.aspose.com/2020/08/07/create-outlook-email-msg-eml-emlx-using-cpp/
 
    Email email(nullptr, "");
    email.setSenderAddress("borgar.ovsthus@technipfmc.com");
