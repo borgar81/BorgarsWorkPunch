@@ -56,6 +56,15 @@ HEADERS += \
    src/WeekReport.h \
    src/WeekReportModel.h
 
+ios{
+    HEADERS += src/IOSInterface.h \
+    OBJECTIVE_SOURCES += src/IOSInterface.mm \
+}
+
+ios {
+    LIBS += -framework MessageUI
+}
+
 # Default rules for deployment.
 unix {
     target.path = $$[QT_INSTALL_PLUGINS]/generic
