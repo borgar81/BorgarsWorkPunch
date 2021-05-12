@@ -7,6 +7,9 @@ class WeekReportModel : public QAbstractListModel
 {
    Q_OBJECT
 
+   Q_PROPERTY(QDateTime fromDateTimeUTC READ getFromTimeUTC)
+   Q_PROPERTY(QDateTime toDateTimeUTC READ getToTimeUTC)
+
    Q_PROPERTY(WeekReportTypes::WeekReportTypesEnum reportFormat READ getReportFormat WRITE setReportFormat)
 
    private:
@@ -45,4 +48,7 @@ public:
 
       WeekReportTypes::WeekReportTypesEnum getReportFormat() const { return mReportFormat; }
       void setReportFormat(WeekReportTypes::WeekReportTypesEnum reportFormat);
+
+      QDateTime getFromTimeUTC() const { return mWeekReport.getFromDateTimeUTC(); }
+      QDateTime getToTimeUTC() const { return mWeekReport.getToDateTimeUTC(); }
 };

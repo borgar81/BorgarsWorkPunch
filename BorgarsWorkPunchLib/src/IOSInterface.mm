@@ -1,6 +1,5 @@
 #include <QGuiApplication>
 #include <QWindow>
-#include <qpa/qplatformnativeinterface.h>
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
@@ -81,7 +80,7 @@ QString IOSInterface::getMacAddress()
  * @param recipients
  * @param body
  */
-void IOSInterface::open(QString subject, QList<QString> recipients, QString body)
+void IOSInterface::openNewMailMessage(const QString &subject, const QList<QString> &recipientsList, const QString &body, const QByteArray &attatchmentData, const QString &attatchmentFileName)
 {
    /*
     UIView *view = static_cast<UIView *>(
@@ -106,17 +105,19 @@ void IOSInterface::open(QString subject, QList<QString> recipients, QString body
    MFMailComposeViewController *mailer = [[[MFMailComposeViewController alloc] init] autorelease];
    [mailer setMailComposeDelegate: id(m_delegate)];
    [mailer setSubject:subject.toNSString()];
+   //mail.addAttachmentData(fileData as Data, mimeType: "text/txt", fileName: "application.log")
    NSMutableArray *toRecipients = [[NSMutableArray alloc] init];
-   for(int i = 0; i < recipients.length(); i++)
+   for(int i = 0; i < recipientsList.length(); i++)
    {
-       [toRecipients addObject:recipients.at(i).toNSString()];
+       [toRecipients addObject:recipientsList.at(i).toNSString()];
    }
    [mailer setToRecipients:toRecipients];
    NSString *emailBody = body.toNSString();
    [mailer setMessageBody:emailBody isHTML:NO];
+
+   NSData *fileData = body.toUtf8().toNSData();
+   [mailer addAttachmentData:fileData mimeType: @"text/txt" fileName:@"filename.txt"];
    [qtController presentViewController:mailer animated:YES completion:nil];
-
-
 }
 
 QT_END_NAMESPACE

@@ -47,14 +47,19 @@ CppInterface::CppInterface(SQLInterface *sqlinterface, QObject *parent)
 
 bool CppInterface::sendEmailReport()
 {
+   WeekReport weekReport = mSQLInterface->getCurrentWeekReport();
+
    QList<QString> toList;
    toList << "borgar.ovsthus@technipfmc.com";
 
-   QString body = "This     is     a long     text\n";
+   QString body = "This\tis\ta\tlong\ttext\n";
    body += "New line";
 
+   QString subject = QStringLiteral("Work report (%1 -> %2)")
+         .arg(weekReport.getFromDateTimeUTC().toLocalTime().toString("dd.mm.yyyy"))
+         .arg(weekReport.getToDateTimeUTC().toLocalTime().toString("dd.mm.yyyy"));
 
-   mIOSInterface->open("Subject", toList, body);
+   mIOSInterface->openNewMailMessage(subject, toList, body, body.toUtf8(), "WorkReport.txt");
    //emit debugMessage(macAddress);
 
    /*

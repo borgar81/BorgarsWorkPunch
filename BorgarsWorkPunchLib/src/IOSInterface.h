@@ -23,5 +23,5 @@ class IOSInterface : public QObject
 
       QString getMacAddress();
 
-      Q_INVOKABLE void open(QString subject, QList<QString> toRecipients, QString body);
+      Q_INVOKABLE void openNewMailMessage(const QString &subject, const QList<QString> &recipientsList, const QString &body, const QByteArray &attatchmentData, const QString &attatchmentFileName);
 };
