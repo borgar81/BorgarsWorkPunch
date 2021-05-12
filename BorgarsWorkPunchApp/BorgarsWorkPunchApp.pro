@@ -52,6 +52,9 @@ android {
 ios {
     QMAKE_INFO_PLIST = ios/Project-Info.plist
     OTHER_FILES += $$QMAKE_INFO_PLIST
+
+    LIBS += -framework MessageUI
+#            -framework UIKit
 }
 
 # set application icons for win and macx

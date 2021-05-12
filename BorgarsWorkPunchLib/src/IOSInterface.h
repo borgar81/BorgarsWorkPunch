@@ -1,15 +1,27 @@
 #pragma once
 
-//#include <QObject>
+#include <QObject>
 #include <QString>
 
-class IOSInterface
+class IOSInterface : public QObject
 {
-   //Q_OBJECT
+   Q_OBJECT
+
+   signals:
+       void mailCancelled();
+       void mailSaved();
+       void mailSent();
+       void mailFailed();
+
+   private:
+       void *m_delegate;
    
    public:
-      IOSInterface();
+      IOSInterface(QObject *parent=nullptr);
       ~IOSInterface();
 
+
       QString getMacAddress();
+
+      Q_INVOKABLE void open(QString subject, QList<QString> toRecipients, QString body);
 };

@@ -3,6 +3,8 @@
 #include <QObject>
 #include <QDateTime>
 
+class IOSInterface;
+
 class SQLInterface;
 
 class CppInterface : public QObject
@@ -15,6 +17,14 @@ class CppInterface : public QObject
    private:
       SQLInterface *mSQLInterface;
 
+      IOSInterface *mIOSInterface;
+
+
+   private slots:
+      void onMailCancelled();
+      void onMailSaved();
+      void onMailSent();
+      void onMailFailed();
 
    public:
       explicit CppInterface(SQLInterface *sqlinterface, QObject *parent = nullptr);

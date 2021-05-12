@@ -1,6 +1,7 @@
 QT += gui
-QT += network
+QT += network  # TODO Do we need this anymore?
 QT += sql
+#QT += gui-private
 
 TEMPLATE = lib
 CONFIG += staticlib
@@ -57,13 +58,19 @@ HEADERS += \
    src/WeekReportModel.h
 
 ios{
-    HEADERS += src/IOSInterface.h \
-    OBJECTIVE_SOURCES += src/IOSInterface.mm \
+    HEADERS +=  \
+      src/IOSInterface.h
+      #src/MyObject.h
+
+    OBJECTIVE_SOURCES += \
+      src/IOSInterface.mm
+      #src/MyObject.mm
 }
 
-ios {
-    LIBS += -framework MessageUI
-}
+#ios {
+#    LIBS += -framework MessageUI \
+#            -framework UIKit
+#}
 
 # Default rules for deployment.
 unix {

@@ -7,17 +7,62 @@
 #include "SQLInterface.h"
 #include "email.h"
 #include "CppInterface.h"
+#ifdef Q_OS_IOS
+   #include "IOSInterface.h"
+#endif
+
+
+void CppInterface::onMailCancelled()
+{
+   emit debugMessage("Cancelled");
+}
+
+void CppInterface::onMailSaved()
+{
+   emit debugMessage("Saved");
+}
+
+void CppInterface::onMailSent()
+{
+   emit debugMessage("Sent");
+}
+
+void CppInterface::onMailFailed()
+{
+   emit debugMessage("Failed");
+}
 
 CppInterface::CppInterface(SQLInterface *sqlinterface, QObject *parent)
    : QObject(parent)
 {
    mSQLInterface = sqlinterface;
+   mIOSInterface = new IOSInterface(this);
 
+   connect(mIOSInterface, &IOSInterface::mailCancelled, this, &CppInterface::onMailCancelled);
+   connect(mIOSInterface, &IOSInterface::mailSaved, this, &CppInterface::onMailSaved);
+   connect(mIOSInterface, &IOSInterface::mailSent, this, &CppInterface::onMailSent);
+   connect(mIOSInterface, &IOSInterface::mailFailed, this, &CppInterface::onMailFailed);
 }
 
 
 bool CppInterface::sendEmailReport()
 {
+   QList<QString> toList;
+   toList << "borgar.ovsthus@technipfmc.com";
+
+   QString body = "This     is     a long     text\n";
+   body += "New line";
+
+
+   mIOSInterface->open("Subject", toList, body);
+   //emit debugMessage(macAddress);
+
+   /*
+   Links:
+      https://github.com/ndesai/qt-mobile-modules
+      https://forum.qt.io/topic/88297/native-objective-c-calls-from-cpp-qt-ios-email-call
+   */
+
    /*
    bool ok = false;
 
@@ -78,7 +123,7 @@ bool CppInterface::sendEmailReport()
    // https://docs.fileformat.com/email/eml/
    // https://blog.aspose.com/2020/08/07/create-outlook-email-msg-eml-emlx-using-cpp/
 
-   Email email(nullptr, "");
+   /*Email email(nullptr, "");
 
    connect(&email, &Email::debugMessage, this, &CppInterface::debugMessage);
 
@@ -87,6 +132,8 @@ bool CppInterface::sendEmailReport()
    email.setSubject("Week report");
    email.setMessageText("This is      a   test.Tag");
    email.openInDefaultProgram();
+   */
+
 
    //QDesktopServices::openUrl(QUrl("ms-outlook://compose?to=borgar.ovsthus@technipfmc.com&subject=Weekreport&body=Message", QUrl::TolerantMode));
    //qDebug() << result;
