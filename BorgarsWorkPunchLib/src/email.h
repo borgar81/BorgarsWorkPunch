@@ -39,6 +39,7 @@ signals:
       * that indicates if the mail client was opened successful or not.
       */
     void composerOpened(bool successful);
+    void debugMessage(const QString &text);
 
 private:
     EmailPrivate p;

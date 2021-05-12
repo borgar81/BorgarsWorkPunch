@@ -10,6 +10,7 @@ class CppInterface : public QObject
    Q_OBJECT
 
    signals:
+      void debugMessage(const QString &text);
 
    private:
       SQLInterface *mSQLInterface;

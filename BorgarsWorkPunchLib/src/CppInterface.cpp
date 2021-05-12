@@ -12,6 +12,7 @@ CppInterface::CppInterface(SQLInterface *sqlinterface, QObject *parent)
    : QObject(parent)
 {
    mSQLInterface = sqlinterface;
+
 }
 
 
@@ -78,12 +79,17 @@ bool CppInterface::sendEmailReport()
    // https://blog.aspose.com/2020/08/07/create-outlook-email-msg-eml-emlx-using-cpp/
 
    Email email(nullptr, "");
+
+   connect(&email, &Email::debugMessage, this, &CppInterface::debugMessage);
+
    email.setSenderAddress("borgar.ovsthus@technipfmc.com");
    email.setReceiverAddress("borgar.ovsthus@technipfmc.com");
    email.setSubject("Week report");
    email.setMessageText("This is      a   test.Tag");
    email.openInDefaultProgram();
 
+   //QDesktopServices::openUrl(QUrl("ms-outlook://compose?to=borgar.ovsthus@technipfmc.com&subject=Weekreport&body=Message", QUrl::TolerantMode));
+   //qDebug() << result;
    return true;
 }
 

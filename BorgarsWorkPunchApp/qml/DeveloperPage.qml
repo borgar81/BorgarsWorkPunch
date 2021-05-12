@@ -1,14 +1,24 @@
 import QtQuick 2.0
 import Felgo 3.0 as Felgo
 import QtQuick.Dialogs 1.3 as QtDialogs
+import QtQuick.Controls 2.12 as QtQuickControls
 
 Felgo.Page
 {
    title: qsTr("Developer Zone")
 
+   Connections
+   {
+       target: cppInterface
+       onDebugMessage:
+       {
+           debugEdit.append(text + "\n");
+       }
+   }
+
    Column
    {
-      anchors.centerIn: parent
+      anchors.fill: parent
 
       Felgo.AppButton
       {
@@ -28,6 +38,13 @@ Felgo.Page
          {
             insertTestDataMessageBox.open()
          }
+      }
+
+      TextEdit
+      {
+         id: debugEdit
+         //readOnly: true
+         wrapMode: TextEdit.WrapAnywhere
       }
    }
 

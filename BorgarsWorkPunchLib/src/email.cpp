@@ -93,7 +93,7 @@ void Email::openInDefaultProgram()
 
     // Create temporary file and open it in the user's default email composer
     const QDir writeDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QString tmpFilePath = writeDir.filePath("ComposedEmail-%1.emlx").arg(QDateTime::currentDateTime().toTime_t());
+    QString tmpFilePath = writeDir.filePath("ComposedEmail-%1.msg").arg(QDateTime::currentDateTime().toTime_t());
 
     qDebug() << tmpFilePath;
 
@@ -106,11 +106,22 @@ void Email::openInDefaultProgram()
         return;
     }
 
-    tmpFile.write(email.toLatin1());
+    tmpFile.write(email.toUtf8());
     tmpFile.close();
 
     bool result = QDesktopServices::openUrl(QUrl(tmpFilePath));
     qDebug() << "OpenEmail result: " << result;
 
+    emit debugMessage("MAIL PATH: " + tmpFilePath);
+
     emit composerOpened(result);
+    if (result == true)
+    {
+       emit debugMessage("Open email OK!");
+    }
+    else
+    {
+       emit debugMessage("Open email FAILED!");
+    }
+
 }
