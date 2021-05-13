@@ -20,15 +20,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-   src/email.cpp \
-   src/mimetypemanager.cpp \
+   #src/email.cpp \                 // TODO Delete File
+   #src/mimetypemanager.cpp \       // TODO Delete File
    src/CppInterface.cpp \
    src/DayReport.cpp \
    src/Formatter.cpp \
-   src/FirebaseAuthHandler.cpp \
-   src/FirebaseInterface.cpp \
+   #src/FirebaseAuthHandler.cpp \
+   #src/FirebaseInterface.cpp \
    src/ReportParser.cpp \
-   src/smtp.cpp \
+   #src/smtp.cpp \                  // TODO Delete File
    src/SQLInterface.cpp \
    src/TimeRegistration.cpp \
    src/Util.cpp \
@@ -38,17 +38,17 @@ SOURCES += \
    src/WeekReportModel.cpp
 
 HEADERS += \
-   src/email_p.h \
-   src/email.h \
-   src/mimetypemanager.h \
+   #src/email_p.h \                 // TODO Delete File
+   #src/email.h \                   // TODO Delete File
+   #src/mimetypemanager.h \         // TODO Delete File
    src/Constants.h \
    src/CppInterface.h \
    src/DayReport.h \
    src/Formatter.h \
-   src/FirebaseAuthHandler.h \
-   src/FirebaseInterface.h \
+   #src/FirebaseAuthHandler.h \     // TODO Delete File
+   #src/FirebaseInterface.h \       // TODO Delete File
    src/ReportParser.h \
-   src/smtp.h \
+   #src/smtp.h \                    // TODO Delete File
    src/SQLInterface.h \
    src/TimeRegistration.h \
    src/Util.h \

@@ -28,7 +28,7 @@ int WeekReportModel::rowCount(const QModelIndex &parent) const
 {
    Q_UNUSED(parent)
 
-   return mWeekReport.getDayReportList().size();
+   return mWeekReport.getDayCount();
 }
 
 QVariant WeekReportModel::data(const QModelIndex &index, int role) const
@@ -40,7 +40,8 @@ QVariant WeekReportModel::data(const QModelIndex &index, int role) const
 
    if (role == WeekDayNameRole)
    {
-      return mWeekReport.getDayReportList().at(index.row()).getDayName();
+      const DayReport dayReport = mWeekReport.getDayReport(index.row());
+      return dayReport.getDayName();
    }
    else if (role == WeekReportDay)
    {

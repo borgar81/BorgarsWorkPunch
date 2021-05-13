@@ -10,9 +10,14 @@ Felgo.Page
 
    title: qsTr("Week Report")
 
-   onAppeared:
+   property var fromDateTime
+   property var toDateTime
+
+   Component.onCompleted:
    {
-      sqlInterface.fetchReport(cppInterface.getStartOfCurrentWeekDate(), cppInterface.getEndOfCurrentWeekDate())
+      root.fromDateTime = cppInterface.getStartOfCurrentWeekDate()
+      root.toDateTime = cppInterface.getEndOfCurrentWeekDate()
+      sqlInterface.fetchReport(fromDateTime, toDateTime)
    }
 
    Rectangle
@@ -29,6 +34,49 @@ Felgo.Page
 
       Felgo.IconButton
       {
+         icon: Felgo.IconType.arrowleft
+         onClicked:
+         {
+            root.toDateTime = fromDateTime
+            var tmpDate = new Date(fromDateTime);
+            tmpDate.setDate(fromDateTime.getDate() - 7);
+            root.fromDateTime = tmpDate;
+            sqlInterface.fetchReport(fromDateTime, toDateTime)
+         }
+      }
+
+      Felgo.AppText
+      {
+         id: periodLabel
+         text: Qt.formatDate(fromDateTime, "dd.MM.yyyy") + " - " + Qt.formatDate(toDateTime, "dd.MM.yyyy")
+         //text: "03.05.2021 - 09.05.2021"
+         Layout.fillWidth: true
+         horizontalAlignment: Text.AlignHCenter
+         verticalAlignment: Text.AlignVCenter
+      }
+      Felgo.IconButton
+      {
+         icon: Felgo.IconType.arrowright
+         onClicked:
+         {
+            root.fromDateTime = toDateTime
+            var tmpDate = new Date(toDateTime);
+            tmpDate.setDate(toDateTime.getDate() + 7);
+            root.toDateTime = tmpDate;
+            sqlInterface.fetchReport(fromDateTime, toDateTime)
+         }
+      }
+   }
+
+   RowLayout
+   {
+      id: subHeaderRow
+      anchors.top: headerRow.bottom
+      anchors.left: parent.left
+      anchors.right: parent.right
+
+      Felgo.IconButton
+      {
          icon: Felgo.IconType.envelope
          onClicked:
          {
@@ -38,13 +86,13 @@ Felgo.Page
 
       Felgo.AppText
       {
-
-         id: periodLabel
-         text: "03.05.2021 - 09.05.2021"
+         id: weekTotalHoursText
+         text: "Week Total: " + sqlInterface.totalWorkedHoursWeek
          Layout.fillWidth: true
          horizontalAlignment: Text.AlignHCenter
          verticalAlignment: Text.AlignVCenter
       }
+
       Felgo.IconButton
       {
          icon: Felgo.IconType.calendar
@@ -55,23 +103,14 @@ Felgo.Page
       }
    }
 
-   Felgo.AppText
-   {
 
-      id: weekTotalHoursText
-      text: "Week Total: " + sqlInterface.totalWorkedHoursWeek
-      anchors.top: headerRow.bottom
-      anchors.left: parent.left
-      anchors.right: parent.right
-      horizontalAlignment: Text.AlignHCenter
-      verticalAlignment: Text.AlignVCenter
-   }
+
 
    Felgo.AppListView
    {
       id: detailedReportView
       anchors.topMargin: dp(10)
-      anchors.top: weekTotalHoursText.bottom
+      anchors.top: subHeaderRow.bottom
       anchors.bottom: reportTypeButtonRow.top
       anchors.left: parent.left
       anchors.right: parent.right
@@ -88,8 +127,6 @@ Felgo.Page
    Felgo.AppTabBar
    {
       id: reportTypeButtonRow
-      //anchors.left: parent.left
-      //anchors.right: parent.right
       anchors.bottom: parent.bottom
       Felgo.AppTabButton
       {

@@ -93,8 +93,8 @@ bool SQLInterface::initializeDatabase()
          mPunchInTimestamp = punchInTime;
          setActiveProjectID(projectID);
       }
-      qDebug() << "Current project: " << projectID;
-      qDebug() << "punchinTime: " << punchInTime;
+      //qDebug() << "Current project: " << projectID;
+      //qDebug() << "punchinTime: " << punchInTime;
    }
 
    // Validate current PunchIn
@@ -205,6 +205,16 @@ void SQLInterface::closeDatabase()
  *
  * @return true on success, false on failure
  */
+QMap<int, QString> SQLInterface::getProjectIDCrossRefMap() const
+{
+   return mProjectIDCrossRefMap;
+}
+
+QMap<int, QVariantMap> SQLInterface::getProjectMap() const
+{
+   return mProjectMap;
+}
+
 bool SQLInterface::createProjectsTable()
 {
    if (QSqlDatabase::database().tables().contains(PROJECTS_TABLE_NAME))
@@ -501,6 +511,7 @@ void SQLInterface::fetchProjectList()
       tmpList << map;
 
       mProjectIDCrossRefMap.insert(projectID, projectName);
+      mProjectMap.insert(projectID, map);
    }
 
    mCurrentWeekReportModel->updateProjectIDCrossRefMap(mProjectIDCrossRefMap);
@@ -535,7 +546,7 @@ void SQLInterface::fetchReport(const QDateTime &fromTimeLocalTime, const QDateTi
    while(query.next())
    {
       //qDebug() << query.record();
-      qDebug() << query.value(2).toDateTime();
+      //qDebug() << query.value(2).toDateTime();
 
       int projectID = query.value(0).toInt();
       QString projectName = query.value(1).toString();
@@ -545,7 +556,7 @@ void SQLInterface::fetchReport(const QDateTime &fromTimeLocalTime, const QDateTi
       punchInTimeUTC.setTimeSpec(Qt::UTC);
       punchOutTimeUTC.setTimeSpec(Qt::UTC);
 
-      DayReport &dayReport = weekReport.mDayReportList[punchInTimeUTC.date().dayOfWeek()-1];
+      DayReport &dayReport = weekReport.getDayReportRef(punchInTimeUTC.date().dayOfWeek()-1);
       dayReport.mTimeRegistrationList << TimeRegistration(projectID, projectName, punchInTimeUTC, punchOutTimeUTC);
 
       //timeRegistrationList << TimeRegistration(projectID, projectName, punchIn, punchOut);
@@ -563,6 +574,7 @@ void SQLInterface::fetchReport(const QDateTime &fromTimeLocalTime, const QDateTi
    QString weekTotalSecondsStr = QString::number(weekReport.getWeekTotalHours() / 3600., 'f', 2);
    setTotalWorkedHoursWeek(weekTotalSecondsStr);
 
+   setCurrentWeekReport(weekReport);
    mCurrentWeekReportModel->updateWeekReport(weekReport);
 }
 
@@ -967,6 +979,15 @@ void SQLInterface::setTotalWorkedHoursWeek(const QString &totalWorkedHoursWeek)
    {
       mTotalWorkedHoursWeek = totalWorkedHoursWeek;
       emit totalWorkedHoursWeekChanged();
+   }
+}
+
+void SQLInterface::setCurrentWeekReport(const WeekReport &weekReport)
+{
+   if (weekReport != mCurrentWeekReport)
+   {
+      mCurrentWeekReport = weekReport;
+      emit currentWeekReportChanged();
    }
 }
 

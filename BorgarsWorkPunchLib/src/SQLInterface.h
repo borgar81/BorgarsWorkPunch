@@ -26,7 +26,7 @@ class SQLInterface : public QObject
    Q_PROPERTY(QVariantList projectList READ getProjectList NOTIFY projectListChanged);
    Q_PROPERTY(QString totalWorkedHoursToday READ getTotalWorkedHoursToday  NOTIFY totalWorkedHoursTodayChanged);
    Q_PROPERTY(QString totalWorkedHoursWeek READ getTotalWorkedHoursWeek  NOTIFY totalWorkedHoursWeekChanged);
-   Q_PROPERTY(WeekReport currentWeekReport READ getCurrentWeekReport NOTIFY currentWeekReportChanged)
+   Q_PROPERTY(WeekReport currentWeekReport READ getCurrentWeekReport WRITE setCurrentWeekReport NOTIFY currentWeekReportChanged)
    Q_PROPERTY(WeekReportModel *currentWeekReportModel READ getCurrentWeekReportModel CONSTANT)
 
    signals:
@@ -54,6 +54,9 @@ class SQLInterface : public QObject
 
       /** Map containing ProjectIDs and Project Names. Key is ProjectID */
       QMap<int, QString> mProjectIDCrossRefMap;
+
+      /** Map containing ProjectIDs and Project Data. Key is ProjectID */
+      QMap<int, QVariantMap> mProjectMap;
 
       bool createProjectsTable();
       bool createProjectRegHistoryTable();
@@ -126,6 +129,10 @@ class SQLInterface : public QObject
       void setTotalWorkedHoursWeek(const QString &totalWorkedHoursWeek);
 
       WeekReport getCurrentWeekReport() const { return mCurrentWeekReport; }
+      void setCurrentWeekReport(const WeekReport &weekReport);
+
       WeekReportModel *getCurrentWeekReportModel() const { return mCurrentWeekReportModel; }
 
+      QMap<int, QString> getProjectIDCrossRefMap() const;
+      QMap<int, QVariantMap> getProjectMap() const;
 };

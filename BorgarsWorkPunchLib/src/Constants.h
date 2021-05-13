@@ -37,6 +37,42 @@ namespace WeekDays
    };
 }
 
+namespace SAPColumns
+{
+   enum SAPColumnsEnum
+   {
+      Send_CCtr = 0,
+      ActTyp,
+      Rec_CCtr,
+      Rec_Order,
+      Network,
+      Activity,
+      AA_Type,
+
+      Monday = 9,
+      Monday_From,
+      Monday_To,
+      Tuesday,
+      Tuesday_From,
+      Tuesday_To,
+      Wednesday,
+      Wednesday_From,
+      Wednesday_To,
+      Thursday,
+      Thursday_From,
+      Thursday_To,
+      Friday,
+      Friday_From,
+      Friday_To,
+      Saturday,
+      Saturday_From,
+      Saturday_To,
+      Sundayday,
+      Sundayday_From,
+      Sundayday_To
+   };
+}
+
 namespace ProjectTypes
 {
    Q_NAMESPACE

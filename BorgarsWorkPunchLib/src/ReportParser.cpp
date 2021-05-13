@@ -66,7 +66,6 @@ bool ReportParser::isTimeRegInsideFromAndTo(const QDateTime &punchInUTC, const Q
 
 WeekReport ReportParser::createWeekReport(const QDateTime &fromDateTimeUTC, const QDateTime &toDateTimeUTC)
 {
-
    WeekReport weekReport(fromDateTimeUTC, toDateTimeUTC);
 
    /*QJsonObject rootObject = mJsonDocument.object();

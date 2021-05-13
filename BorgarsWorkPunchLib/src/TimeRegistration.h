@@ -18,4 +18,11 @@ class TimeRegistration
       QString getProjectName() const;
       QDateTime getPunchInTimeUTC() const;
       QDateTime getPunchOutTimeUTC() const;
+
+      //--------------------------------------
+      // Operator Overloading
+      //--------------------------------------
+      bool operator==(const TimeRegistration &other) const;
+      bool operator!=(const TimeRegistration &other) const;
+
 };

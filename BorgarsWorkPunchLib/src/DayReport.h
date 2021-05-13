@@ -21,6 +21,12 @@ class DayReport
       QString getDayReportTotals(const QMap<int, QString> &projectIDMap) const;
       QString getDayReportPunchIns() const;
       WeekDays::WeekDaysEnum getWeekDay() const;
+
+      //--------------------------------------
+      // Operator Overloading
+      //--------------------------------------
+      bool operator==(const DayReport &other) const;
+      bool operator!=(const DayReport &other) const;
 };
 
 Q_DECLARE_METATYPE(DayReport)

@@ -1,6 +1,10 @@
 // Qt Includes
 #include <QUrl>
 #include <QDesktopServices>
+#include <QDebug>
+
+// C++ Includes
+#include <iostream>
 
 // Local Includes
 #include "WeekData.h"
@@ -14,34 +18,38 @@
 
 void CppInterface::onMailCancelled()
 {
-   emit debugMessage("Cancelled");
+   emit debugMessage("Mail Cancelled");
 }
 
 void CppInterface::onMailSaved()
 {
-   emit debugMessage("Saved");
+   emit debugMessage("Mail Saved");
 }
 
 void CppInterface::onMailSent()
 {
-   emit debugMessage("Sent");
+   emit debugMessage("Mail Sent");
 }
 
 void CppInterface::onMailFailed()
 {
-   emit debugMessage("Failed");
+   emit debugMessage("Mail Failed");
 }
 
 CppInterface::CppInterface(SQLInterface *sqlinterface, QObject *parent)
    : QObject(parent)
 {
    mSQLInterface = sqlinterface;
-   mIOSInterface = new IOSInterface(this);
 
+
+   // TODO Make general interface for both IOS and Android
+#ifdef Q_OS_IOS
+   mIOSInterface = new IOSInterface(this);
    connect(mIOSInterface, &IOSInterface::mailCancelled, this, &CppInterface::onMailCancelled);
    connect(mIOSInterface, &IOSInterface::mailSaved, this, &CppInterface::onMailSaved);
    connect(mIOSInterface, &IOSInterface::mailSent, this, &CppInterface::onMailSent);
    connect(mIOSInterface, &IOSInterface::mailFailed, this, &CppInterface::onMailFailed);
+#endif
 }
 
 
@@ -49,17 +57,32 @@ bool CppInterface::sendEmailReport()
 {
    WeekReport weekReport = mSQLInterface->getCurrentWeekReport();
 
-   QList<QString> toList;
-   toList << "borgar.ovsthus@technipfmc.com";
 
-   QString body = "This\tis\ta\tlong\ttext\n";
-   body += "New line";
+
+   /*std::cout << "======================================" << std::endl;
+   std::cout << sapString.toStdString();
+   std::cout << "======================================" << std::endl;
+   return true;*/
+
+
+   QList<QString> toList;
+   toList << "borgar.ovsthus@technipfmc.com";         // TODO Read from Settings
+
+   QString body = "This email has been sent from BorarsWorkPunch.\n\nOpen the attatchment with the desired format, copy the whole content, and paste it into SAP or ESS";
 
    QString subject = QStringLiteral("Work report (%1 -> %2)")
-         .arg(weekReport.getFromDateTimeUTC().toLocalTime().toString("dd.mm.yyyy"))
-         .arg(weekReport.getToDateTimeUTC().toLocalTime().toString("dd.mm.yyyy"));
+         .arg(weekReport.getFromDateTimeUTC().toLocalTime().toString("dd.MM.yyyy"))
+         .arg(weekReport.getToDateTimeUTC().toLocalTime().toString("dd.MM.yyyy"));
 
-   mIOSInterface->openNewMailMessage(subject, toList, body, body.toUtf8(), "WorkReport.txt");
+   qDebug() << subject;
+
+   QString sapString = weekReport.generateSapReportString(mSQLInterface->getProjectMap());
+
+#ifdef Q_OS_IOS
+      mIOSInterface->openNewMailMessage(subject, toList, body, sapString.toUtf8(), "SAP_Format.txt");
+#else
+   emit debugMessage("Send-email is not supported on this OS");
+#endif
    //emit debugMessage(macAddress);
 
    /*

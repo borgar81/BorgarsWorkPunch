@@ -110,3 +110,46 @@ QString DayReport::getDayReportPunchIns() const
 
    return reportString;
 }
+
+/**
+* Returns true if the DayReport object is equal to the other DayReport object
+*
+* @param other the other DayReport object to compare with
+*
+* @return true if the two DayReport objects are equal. Otherwise return false
+*/
+bool DayReport::operator==(const DayReport &other) const
+{
+   if (this == &other)
+      return true;
+
+   if (this->mWeekDay != other.mWeekDay)
+      return false;
+
+   if (this->mDayName != other.mDayName)
+      return false;
+
+   if (this->mTimeRegistrationList != other.mTimeRegistrationList)
+      return false;
+
+   return true;
+}
+
+/**
+* Returns true if the DayReport object is NOT equal to the other DayReport object
+*
+* @param other the other DayReport object to compare with
+*
+* @return true if the two DayReport objects are NOT equal. Otherwise return false
+*/
+bool DayReport::operator!=(const DayReport &other) const
+{
+   if(*this == other)
+   {
+      return false;
+   }
+   else
+   {
+      return true;
+   }
+}
