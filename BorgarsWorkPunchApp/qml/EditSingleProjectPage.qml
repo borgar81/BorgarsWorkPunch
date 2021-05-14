@@ -38,11 +38,11 @@ Felgo.Page
             if(networkRadio.checked)
             {
 
-               sqlInterface.addNewProject(nameEdit.text, networkEdit.text, parseInt(activityEdit.text), ProjectTypes.Network, showOnHomePageSwitch.checked)     // TODO use enum for type
+               sqlInterface.addNewProject(nameEdit.text, networkEdit.text, getActivityAsInt(), ProjectTypes.Network, showOnHomePageSwitch.checked)     // TODO use enum for type
             }
             else
             {
-               sqlInterface.addNewProject(nameEdit.text, orderEdit.text, parseInt(activityEdit.text), ProjectTypes.Order, showOnHomePageSwitch.checked)       // TODO use enum for type
+               sqlInterface.addNewProject(nameEdit.text, orderEdit.text, getActivityAsInt(), ProjectTypes.Order, showOnHomePageSwitch.checked)       // TODO use enum for type
             }
          }
          //-----------------------
@@ -52,11 +52,11 @@ Felgo.Page
          {
             if(networkRadio.checked)
             {
-               sqlInterface.updateProject(root.projectID, nameEdit.text, networkEdit.text, parseInt(activityEdit.text), ProjectTypes.Network, showOnHomePageSwitch.checked)    // TODO use enum for type
+               sqlInterface.updateProject(root.projectID, nameEdit.text, networkEdit.text, getActivityAsInt(), ProjectTypes.Network, showOnHomePageSwitch.checked)    // TODO use enum for type
             }
             else
             {
-               sqlInterface.updateProject(root.projectID, nameEdit.text, orderEdit.text, parseInt(activityEdit.text), ProjectTypes.Order, showOnHomePageSwitch.checked)      // TODO use enum for type
+               sqlInterface.updateProject(root.projectID, nameEdit.text, orderEdit.text, getActivityAsInt(), ProjectTypes.Order, showOnHomePageSwitch.checked)      // TODO use enum for type
             }
          }
 
@@ -177,4 +177,16 @@ Felgo.Page
       root.order = ""
       root.activity = ""
    }
+
+   function getActivityAsInt()
+   {
+      var activity = -1;
+      if (activityEdit.text.length > 0)
+      {
+         activity = parseInt(activityEdit.text);
+      }
+
+      return activity;
+   }
+
 }
