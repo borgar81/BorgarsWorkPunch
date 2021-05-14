@@ -30,7 +30,7 @@ DayReport::DayReport(WeekDays::WeekDaysEnum weekDay)
 
 
 /**
- * @return total worked hours this day in seconds
+ * @return total worked time this day in seconds
  */
 quint64 DayReport::getTotalWorkTime() const
 {
@@ -39,6 +39,24 @@ quint64 DayReport::getTotalWorkTime() const
    for (const TimeRegistration &timeReg : mTimeRegistrationList)
    {
       seconds += timeReg.getPunchOutTimeUTC().toSecsSinceEpoch() - timeReg.getPunchInTimeUTC().toSecsSinceEpoch();
+   }
+
+   return seconds;
+}
+
+/**
+ * @return total worked time this day for the given project in seconds
+ */
+quint64 DayReport::getTotalWorkTimeForProject(int projectID) const
+{
+   quint64 seconds = 0;
+
+   for (const TimeRegistration &timeReg : mTimeRegistrationList)
+   {
+      if (timeReg.getProjectID() == projectID)
+      {
+         seconds += timeReg.getPunchOutTimeUTC().toSecsSinceEpoch() - timeReg.getPunchInTimeUTC().toSecsSinceEpoch();
+      }
    }
 
    return seconds;

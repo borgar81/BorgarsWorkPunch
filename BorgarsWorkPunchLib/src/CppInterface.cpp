@@ -57,14 +57,6 @@ bool CppInterface::sendEmailReport()
 {
    WeekReport weekReport = mSQLInterface->getCurrentWeekReport();
 
-
-
-   /*std::cout << "======================================" << std::endl;
-   std::cout << sapString.toStdString();
-   std::cout << "======================================" << std::endl;
-   return true;*/
-
-
    QList<QString> toList;
    toList << "borgar.ovsthus@technipfmc.com";         // TODO Read from Settings
 
@@ -74,9 +66,10 @@ bool CppInterface::sendEmailReport()
          .arg(weekReport.getFromDateTimeUTC().toLocalTime().toString("dd.MM.yyyy"))
          .arg(weekReport.getToDateTimeUTC().toLocalTime().toString("dd.MM.yyyy"));
 
-   qDebug() << subject;
-
    QString sapString = weekReport.generateSapReportString(mSQLInterface->getProjectMap());
+   //std::cout << "===================================" << std::endl;
+   //std::cout << sapString.toStdString();
+   //std::cout << "===================================" << std::endl;
 
 #ifdef Q_OS_IOS
       mIOSInterface->openNewMailMessage(subject, toList, body, sapString.toUtf8(), "SAP_Format.txt");
