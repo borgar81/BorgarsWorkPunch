@@ -115,8 +115,9 @@ void IOSInterface::openNewMailMessage(const QString &subject, const QList<QStrin
    NSString *emailBody = body.toNSString();
    [mailer setMessageBody:emailBody isHTML:NO];
 
-   NSData *fileData = body.toUtf8().toNSData();
-   [mailer addAttachmentData:fileData mimeType: @"text/txt" fileName:@"filename.txt"];
+   NSData *attatchmentDataNS = attatchmentData.toNSData();
+   NSString *attatchmentFileNameNS = attatchmentFileName.toNSString();
+   [mailer addAttachmentData:attatchmentDataNS mimeType: @"text/txt" fileName: attatchmentFileNameNS];
    [qtController presentViewController:mailer animated:YES completion:nil];
 }
 
