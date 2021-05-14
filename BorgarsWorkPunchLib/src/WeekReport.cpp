@@ -82,18 +82,34 @@ QString WeekReport::generateSapReportString(QMap<int, QVariantMap> projectMap) c
    // row, column
    QList<QStringList> sapTable;
 
+   //-------------------------------------------
+   // Find unique projects for this week
+   //-------------------------------------------
+   QList<int> uniqueProjectIDs;
+   for (const DayReport &dayReport : mDayReportList)
+   {
+      for (const TimeRegistration &timeRegData : dayReport.mTimeRegistrationList)
+      {
+         if (!uniqueProjectIDs.contains(timeRegData.getProjectID()))
+         {
+            uniqueProjectIDs << timeRegData.getProjectID();
+         }
+      }
+   }
+
    // Find Max number of entries for one day
    int maxTimeRegistrationPerDay = 0;
    for (const DayReport &dayReport : mDayReportList)
    {
       maxTimeRegistrationPerDay = std::max(maxTimeRegistrationPerDay, dayReport.mTimeRegistrationList.size());
    }
-   maxTimeRegistrationPerDay *= 2;  // Need rows for PunchIns/PunchOuts + rows for project
+
+   const int SAP_TABLE_ROW_COUNT = maxTimeRegistrationPerDay + uniqueProjectIDs.size();
 
    //-------------------------------------------
    // Initialize the table with tabs
    //-------------------------------------------
-   for(int rowIndex=0; rowIndex<maxTimeRegistrationPerDay; rowIndex++)
+   for(int rowIndex=0; rowIndex<SAP_TABLE_ROW_COUNT; rowIndex++)
    {
       QStringList columnList;
       for(int colIndex=0; colIndex<SAP_COLUMN_COUNT; colIndex++)
@@ -105,7 +121,7 @@ QString WeekReport::generateSapReportString(QMap<int, QVariantMap> projectMap) c
    }
 
    //-------------------------------------------
-   // Insert Timeregistration data
+   // Insert Time-registration data
    //-------------------------------------------
    int rowIndex = 0;
    int columnIndex = SAPColumns::Monday_From;
@@ -114,47 +130,70 @@ QString WeekReport::generateSapReportString(QMap<int, QVariantMap> projectMap) c
       // PunchIns/PunchOuts
       for (const TimeRegistration &timeRegData : dayReport.mTimeRegistrationList)
       {
-         sapTable[rowIndex][SAPColumns::AA_Type]     = QStringLiteral("0800") + "\t";     // TODO Add AA_Type as column in Projects table and use that!
-         sapTable[rowIndex][columnIndex]     = timeRegData.getPunchInTimeUTC().toLocalTime().toString("hh:mm") + "\t";      // From
-         sapTable[rowIndex][columnIndex+1]   = timeRegData.getPunchOutTimeUTC().toLocalTime().toString("hh:mm") + "\t";     // To
-         rowIndex++;
-      }
-
-      // Project registrations
-      for (const TimeRegistration &timeRegData : dayReport.mTimeRegistrationList)
-      {
-         quint64 workedSeconds = timeRegData.getPunchOutTimeUTC().toSecsSinceEpoch() - timeRegData.getPunchInTimeUTC().toSecsSinceEpoch();
-         double workProjectHours = workedSeconds / 3600.0;
-
-         QVariantMap projectData = projectMap.value(timeRegData.getProjectID());
-         ProjectTypes::ProjectTypesEnum projectType = static_cast<ProjectTypes::ProjectTypesEnum> (projectData["Type"].toInt());
-         if (projectType == ProjectTypes::ProjectTypesEnum::Network)
-         {
-            sapTable[rowIndex][SAPColumns::Network] = projectData["NetworkOrOrder"].toString() + "\t";
-            sapTable[rowIndex][SAPColumns::Activity] = projectData["Activity"].toString() + "\t";
-         }
-         else if (projectType == ProjectTypes::ProjectTypesEnum::Order)
-         {
-            sapTable[rowIndex][SAPColumns::Rec_Order] = projectData["NetworkOrOrder"].toString() + "\t";
-            QString activity = sapTable[rowIndex][SAPColumns::Activity] = projectData["Activity"].toString();
-            if (activity != QLatin1String("-1"))
-            {
-               sapTable[rowIndex][SAPColumns::Activity] = activity + "\t";
-            }
-         }
-
-         QString hourWorkedString = QString::number(workProjectHours, 'f', 2);
-         hourWorkedString.replace('.', ',');    // TODO Should this be configurable?
-
-         sapTable[rowIndex][columnIndex-1] = hourWorkedString + "\t";
+         sapTable[rowIndex][SAPColumns::AA_Type]     = (QStringLiteral("0800") + "\t");     // TODO Add AA_Type as column in Projects table and use that!
+         sapTable[rowIndex][columnIndex]     = (timeRegData.getPunchInTimeUTC().toLocalTime().toString("hh:mm") + "\t");      // From
+         sapTable[rowIndex][columnIndex+1]   = (timeRegData.getPunchOutTimeUTC().toLocalTime().toString("hh:mm") + "\t");     // To
          rowIndex++;
       }
       rowIndex = 0;
       columnIndex += 3;
    }
 
+
    //-------------------------------------------
-   for(int tmpRowIndex=0; tmpRowIndex<maxTimeRegistrationPerDay; tmpRowIndex++)
+   // Write Project Registrations
+   //-------------------------------------------
+   rowIndex = maxTimeRegistrationPerDay;
+   for(int projectID : uniqueProjectIDs)
+   {
+      QVariantMap projectData = projectMap.value(projectID);
+      ProjectTypes::ProjectTypesEnum projectType = static_cast<ProjectTypes::ProjectTypesEnum> (projectData["Type"].toInt());
+      if (projectType == ProjectTypes::ProjectTypesEnum::Network)
+      {
+         sapTable[rowIndex][SAPColumns::Network] = (projectData["NetworkOrOrder"].toString() + "\t");
+         sapTable[rowIndex][SAPColumns::Activity] = (projectData["Activity"].toString() + "\t");
+      }
+      else if (projectType == ProjectTypes::ProjectTypesEnum::Order)
+      {
+         sapTable[rowIndex][SAPColumns::Rec_Order] = (projectData["NetworkOrOrder"].toString() + "\t");
+         int activity = projectData["Activity"].toInt();
+         if (activity != -1)
+         {
+            sapTable[rowIndex][SAPColumns::Activity] = (QString::number(activity) + "\t");
+         }
+      }
+
+      rowIndex++;
+   }
+
+   //-------------------------------------------
+   // Write Project-registrations
+   //-------------------------------------------
+   rowIndex = maxTimeRegistrationPerDay;
+   columnIndex = SAPColumns::Monday;
+   for (const DayReport &dayReport : mDayReportList)
+   {
+      for(int projectID : uniqueProjectIDs)
+      {
+         quint64 workTimeForProjectInSeconds = dayReport.getTotalWorkTimeForProject(projectID);
+         if (workTimeForProjectInSeconds > 0)
+         {
+            double workProjectHours = workTimeForProjectInSeconds / 3600.0;
+            QString hourWorkedString = QString::number(workProjectHours, 'f', 2);
+            hourWorkedString.replace('.', ',');    // TODO Should this be configurable?
+
+            sapTable[rowIndex][columnIndex] = (hourWorkedString + "\t");
+         }
+         rowIndex++;
+      }
+      rowIndex = maxTimeRegistrationPerDay;
+      columnIndex += 3;
+   }
+
+   //-------------------------------------------
+   // Write the table to a String
+   //-------------------------------------------
+   for(int tmpRowIndex=0; tmpRowIndex<SAP_TABLE_ROW_COUNT; tmpRowIndex++)
    {
       for(int tmpColumnIndex=0; tmpColumnIndex<SAP_COLUMN_COUNT; tmpColumnIndex++)
       {

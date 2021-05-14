@@ -18,6 +18,7 @@ class DayReport
       QString getDayName() const;
 
       quint64 getTotalWorkTime() const;
+      quint64 getTotalWorkTimeForProject(int projectID) const;
       QString getDayReportTotals(const QMap<int, QString> &projectIDMap) const;
       QString getDayReportPunchIns() const;
       WeekDays::WeekDaysEnum getWeekDay() const;

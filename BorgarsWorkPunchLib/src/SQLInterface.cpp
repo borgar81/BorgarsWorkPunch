@@ -505,7 +505,7 @@ void SQLInterface::fetchProjectList()
       map["Id"] = projectID;
       map["Name"] = projectName;
       map["NetworkOrOrder"] = query.value(2).toString();
-      map["Activity"] = query.value(3).toString();
+      map["Activity"] = query.value(3).toInt();
       map["Type"] = query.value(4).toInt();
       map["IncludeInHomePage"] = query.value(5).toBool();
       tmpList << map;
