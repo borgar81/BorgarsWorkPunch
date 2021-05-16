@@ -77,5 +77,28 @@ HEADERS +=
 
 INCLUDEPATH +=  ../
 
-LIBS += -L../BorgarsWorkPunchLib -lBorgarsWorkPunchLib
-PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/libBorgarsWorkPunchLib.a
+#LIBS += -L../BorgarsWorkPunchLib -lBorgarsWorkPunchLib
+
+win32 {
+CONFIG(release, debug|release) {
+LIBS += -L../BorgarsWorkPunchLib/release -lBorgarsWorkPunchLib
+PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/release/BorgarsWorkPunchLib.lib
+}
+CONFIG(debug, debug|release) {
+LIBS += -L../BorgarsWorkPunchLib/debug -lBorgarsWorkPunchLib
+PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/debug/BorgarsWorkPunchLib.lib
+}
+}
+
+linux {
+   LIBS += -L../BorgarsWorkPunchLib -lBorgarsWorkPunchLib
+    PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/libBorgarsWorkPunchLib.a
+}
+
+macx {
+   LIBS += -L../BorgarsWorkPunchLib -lBorgarsWorkPunchLib
+    PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/libBorgarsWorkPunchLib.a
+}
+
+
+
