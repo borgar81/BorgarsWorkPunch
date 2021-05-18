@@ -1,6 +1,6 @@
 # allows to add DEPLOYMENTFOLDERS and links to the Felgo library and QtCreator auto-completion
 CONFIG += felgo
-QT += gui network
+QT += gui
 
 #CONFIG += felgo felgo-live
 
