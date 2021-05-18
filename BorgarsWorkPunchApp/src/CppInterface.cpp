@@ -9,7 +9,6 @@
 // Local Includes
 #include "WeekData.h"
 #include "SQLInterface.h"
-#include "email.h"
 #include "CppInterface.h"
 #ifdef Q_OS_IOS
    #include "IOSInterface.h"

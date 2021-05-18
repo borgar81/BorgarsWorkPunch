@@ -7,13 +7,13 @@
 
 //DISABLE_FIREGBASE #include "BorgarsWorkPunchLib/src/FirebaseInterface.h"
 //DISABLE_FIREGBASE #include "BorgarsWorkPunchLib/src/FirebaseAuthHandler.h"
-#include "BorgarsWorkPunchLib/src/Constants.h"
-#include "BorgarsWorkPunchLib/src/CppInterface.h"
-#include "BorgarsWorkPunchLib/src/WeekReport.h"
-#include "BorgarsWorkPunchLib/src/DayReport.h"
-#include "BorgarsWorkPunchLib/src/WeekReportModel.h"
-#include "BorgarsWorkPunchLib/src/SQLInterface.h"
-#include "BorgarsWorkPunchLib/src/WeekDatesModel.h"
+#include "Constants.h"
+#include "CppInterface.h"
+#include "WeekReport.h"
+#include "DayReport.h"
+#include "WeekReportModel.h"
+#include "SQLInterface.h"
+#include "WeekDatesModel.h"
 
 // uncomment this line to add the Live Client Module and use live reloading with your custom C++ code
 //#include <FelgoLiveClient>

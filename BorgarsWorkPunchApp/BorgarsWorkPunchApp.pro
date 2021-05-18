@@ -40,8 +40,33 @@ RESOURCES += #    resources.qrc # uncomment for publishing
 # also, for quickest deployment on Desktop disable the "Shadow Build" option in Projects/Builds - you can then select "Run Without Deployment" from the Build menu in Qt Creator if you only changed QML files; this speeds up application start, because your app is not copied & re-compiled but just re-interpreted
 
 
-# The .cpp file which was generated for your project. Feel free to hack it.
-SOURCES += src/main.cpp
+SOURCES += \
+   src/main.cpp \
+   src/CppInterface.cpp \
+   src/DayReport.cpp \
+   src/Formatter.cpp \
+   src/ReportParser.cpp \
+   src/SQLInterface.cpp \
+   src/TimeRegistration.cpp \
+   src/Util.cpp \
+   src/WeekData.cpp \
+   src/WeekDatesModel.cpp \
+   src/WeekReport.cpp \
+   src/WeekReportModel.cpp
+
+HEADERS += \
+   src/Constants.h \
+   src/CppInterface.h \
+   src/DayReport.h \
+   src/Formatter.h \
+   src/ReportParser.h \
+   src/SQLInterface.h \
+   src/TimeRegistration.h \
+   src/Util.h \
+   src/WeekData.h \
+   src/WeekDatesModel.h \
+   src/WeekReport.h \
+   src/WeekReportModel.h
 
 
 android {
@@ -73,32 +98,6 @@ DISTFILES += \
    qml/SignInPage.qml \
    qml/WeekPickerDialog.qml
 
-HEADERS +=
 
 INCLUDEPATH +=  ../
-
-#LIBS += -L../BorgarsWorkPunchLib -lBorgarsWorkPunchLib
-
-win32 {
-   CONFIG(release, debug|release) {
-      LIBS += -L../BorgarsWorkPunchLib/release -lBorgarsWorkPunchLib
-      PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/release/BorgarsWorkPunchLib.lib
-   }
-   CONFIG(debug, debug|release) {
-      LIBS += -L../BorgarsWorkPunchLib/debug -lBorgarsWorkPunchLib
-      PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/debug/BorgarsWorkPunchLib.lib
-   }
-}
-
-linux {
-   LIBS += -L../BorgarsWorkPunchLib -lBorgarsWorkPunchLib
-    #PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/libBorgarsWorkPunchLib.a
-}
-
-macx {
-   LIBS += -L../BorgarsWorkPunchLib -lBorgarsWorkPunchLib
-    #PRE_TARGETDEPS += $$OUT_PWD/../BorgarsWorkPunchLib/libBorgarsWorkPunchLib.a
-}
-
-
 
