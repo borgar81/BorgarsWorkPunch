@@ -91,6 +91,12 @@ macx {
 }
 
 DISTFILES += \
+   android/gradle.properties \
+   android/gradle/wrapper/gradle-wrapper.jar \
+   android/gradle/wrapper/gradle-wrapper.properties \
+   android/gradlew \
+   android/gradlew.bat \
+   android/res/values/libs.xml \
    qml/EditHomePage.qml \
    qml/EditProjectsPage.qml \
    qml/EditSingleProjectPage.qml \

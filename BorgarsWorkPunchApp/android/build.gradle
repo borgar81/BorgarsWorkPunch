@@ -1,30 +1,23 @@
 buildscript {
     repositories {
-        maven { url 'https://maven.google.com' }
+        google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.6.0'
     }
 }
 
-allprojects {
-    repositories {
-        maven { url 'https://maven.google.com' }
-        jcenter()
-        maven { url 'https://install.felgo.com/maven/' }
-    }
+repositories {
+    google()
+    jcenter()
 }
 
 apply plugin: 'com.android.application'
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation "com.android.support:support-core-utils:28.0.0"
-    implementation "com.android.support:appcompat-v7:28.0.0"
-
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
 }
 
 android {
@@ -41,15 +34,9 @@ android {
      * Changing them manually might break the compilation!
      *******************************************************/
 
-    compileSdkVersion    androidCompileSdkVersion.toInteger()
-    buildToolsVersion    androidBuildToolsVersion
+    compileSdkVersion androidCompileSdkVersion.toInteger()
 
-    defaultConfig {
-      targetSdkVersion   androidCompileSdkVersion.toInteger()
-      applicationId    = productIdentifier
-      versionCode      = productVersionCode.toInteger()
-      versionName      = productVersionName
-    }
+    buildToolsVersion '28.0.3'
 
     sourceSets {
         main {
@@ -57,15 +44,34 @@ android {
             java.srcDirs = [qt5AndroidDir + '/src', 'src', 'java']
             aidl.srcDirs = [qt5AndroidDir + '/src', 'src', 'aidl']
             res.srcDirs = [qt5AndroidDir + '/res', 'res']
-            resources.srcDirs = ['src']
+            resources.srcDirs = ['resources']
             renderscript.srcDirs = ['src']
             assets.srcDirs = ['assets']
             jniLibs.srcDirs = ['libs']
        }
     }
 
+    tasks.withType(JavaCompile) {
+        options.incremental = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
     lintOptions {
         abortOnError false
     }
-}
 
+    // Do not compress Qt binary resources file
+    aaptOptions {
+        noCompress 'rcc'
+    }
+
+    defaultConfig {
+        resConfig "en"
+        minSdkVersion = qtMinSdkVersion
+        targetSdkVersion = qtTargetSdkVersion
+    }
+}
