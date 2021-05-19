@@ -12,6 +12,7 @@ Felgo.Page
    property string projectID: ""
    property bool isCreateProject : true
 
+   property alias aaType : aaTypeEdit.text
    property alias name : nameEdit.text
    property int type: ProjectTypes.Network
    property alias network : networkEdit.text
@@ -38,11 +39,11 @@ Felgo.Page
             if(networkRadio.checked)
             {
 
-               sqlInterface.addNewProject(nameEdit.text, networkEdit.text, getActivityAsInt(), ProjectTypes.Network, showOnHomePageSwitch.checked)     // TODO use enum for type
+               sqlInterface.addNewProject(nameEdit.text, networkEdit.text, getActivityAsInt(), ProjectTypes.Network, showOnHomePageSwitch.checked, aaTypeEdit.text)
             }
             else
             {
-               sqlInterface.addNewProject(nameEdit.text, orderEdit.text, getActivityAsInt(), ProjectTypes.Order, showOnHomePageSwitch.checked)       // TODO use enum for type
+               sqlInterface.addNewProject(nameEdit.text, orderEdit.text, getActivityAsInt(), ProjectTypes.Order, showOnHomePageSwitch.checked, aaTypeEdit.text)
             }
          }
          //-----------------------
@@ -52,11 +53,11 @@ Felgo.Page
          {
             if(networkRadio.checked)
             {
-               sqlInterface.updateProject(root.projectID, nameEdit.text, networkEdit.text, getActivityAsInt(), ProjectTypes.Network, showOnHomePageSwitch.checked)    // TODO use enum for type
+               sqlInterface.updateProject(root.projectID, nameEdit.text, networkEdit.text, getActivityAsInt(), ProjectTypes.Network, showOnHomePageSwitch.checked, aaTypeEdit.text)
             }
             else
             {
-               sqlInterface.updateProject(root.projectID, nameEdit.text, orderEdit.text, getActivityAsInt(), ProjectTypes.Order, showOnHomePageSwitch.checked)      // TODO use enum for type
+               sqlInterface.updateProject(root.projectID, nameEdit.text, orderEdit.text, getActivityAsInt(), ProjectTypes.Order, showOnHomePageSwitch.checked, aaTypeEdit.text)
             }
          }
 
@@ -74,6 +75,20 @@ Felgo.Page
       anchors.topMargin: dp(10)
       anchors.leftMargin: dp(10)
       anchors.rightMargin: dp(10)
+
+      //--------------------------------------------
+      // Name
+      //--------------------------------------------
+      Felgo.AppText  { text: qsTr("AA_Type") }
+      Felgo.AppTextField
+      {
+         id: aaTypeEdit
+         text: ""
+         Layout.columnSpan: 2
+         Layout.fillWidth: true
+         borderWidth: dp(1)
+         placeholderText: "AA_Type"
+      }
 
       //--------------------------------------------
       // Name
@@ -171,6 +186,7 @@ Felgo.Page
 
    function clearData()
    {
+      root.aaType = ""
       root.name = ""
       root.type = ProjectTypes.Network
       root.network = ""

@@ -56,13 +56,14 @@ Felgo.ListPage
             }
             navigationStack.currentPage.activity = model.Activity
             navigationStack.currentPage.showOnHomePage = model.IncludeInHomePage
+            navigationStack.currentPage.aaType = model.AA_Type
          }
       }
 
       model: Felgo.JsonListModel
       {
          keyField: "Id"
-         fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity", "IncludeInHomePage"]
+         fields: ["Id", "Name", "Type", "NetworkOrOrder", "Activity", "IncludeInHomePage", "AA_Type"]
          source: sqlInterface.projectList
       }
    }

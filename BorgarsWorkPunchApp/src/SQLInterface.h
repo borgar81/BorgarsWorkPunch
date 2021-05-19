@@ -58,7 +58,7 @@ class SQLInterface : public QObject
       /** Map containing ProjectIDs and Project Data. Key is ProjectID */
       QMap<int, QVariantMap> mProjectMap;
 
-      bool createProjectsTable();
+      bool createProjectsTable(int currentVersion);
       bool createProjectRegHistoryTable();
       bool createCurrentStateTable();
       bool createDbVersionTable();
@@ -75,7 +75,7 @@ class SQLInterface : public QObject
       static QString CURRENT_STATE_TABLE_NAME;
       static QString DATABASE_VERSION_TABLE_NAME;
 
-      static const int DB_VERSION = 1;
+      static const int DB_VERSION = 2;
 
       explicit SQLInterface(QObject *parent=nullptr);
       ~SQLInterface();
@@ -86,8 +86,8 @@ class SQLInterface : public QObject
       bool openDatabase();
       void closeDatabase();
 
-      Q_INVOKABLE bool addNewProject(const QString &name, const QString &network, int activity, int projectType, bool includeInHomePage);
-      Q_INVOKABLE bool updateProject(int projectID, const QString &name, const QString &network, int activity, int projectType, bool includeInHomePage);
+      Q_INVOKABLE bool addNewProject(const QString &name, const QString &network, int activity, int projectType, bool includeInHomePage, const QString &aaType);
+      Q_INVOKABLE bool updateProject(int projectID, const QString &name, const QString &network, int activity, int projectType, bool includeInHomePage, const QString &aaType);
       Q_INVOKABLE bool deleteProject(int projectID);
 
       Q_INVOKABLE bool isPunchedIn() const;

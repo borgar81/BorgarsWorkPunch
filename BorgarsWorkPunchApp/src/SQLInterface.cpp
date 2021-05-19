@@ -53,7 +53,19 @@ bool SQLInterface::initializeDatabase()
       return false;
    }
 
-   if(!createProjectsTable())
+   int currentVersion = 1;
+
+   QSqlQuery query;
+   query.exec(QStringLiteral("SELECT * FROM %1 LIMIT 1").arg(DATABASE_VERSION_TABLE_NAME));
+   query.next();
+   currentVersion = query.value(0).toInt();
+
+
+   qDebug() << "Version error: " << query.lastError();
+
+   qDebug() << "Current versioN: " << currentVersion;
+
+   if(!createProjectsTable(currentVersion))
    {
       return false;
    }
@@ -215,17 +227,22 @@ QMap<int, QVariantMap> SQLInterface::getProjectMap() const
    return mProjectMap;
 }
 
-bool SQLInterface::createProjectsTable()
+bool SQLInterface::createProjectsTable(int currentVersion)
 {
    if (QSqlDatabase::database().tables().contains(PROJECTS_TABLE_NAME))
    {
-      // The table already exists; we don't need to do anything.
+      if (currentVersion == 1)
+      {
+         QSqlQuery alterTableQuery;
+         alterTableQuery.exec(QStringLiteral("ALTER TABLE %1 ADD AA_Type TEXT NOT NULL DEFAULT '0800';").arg(PROJECTS_TABLE_NAME));
+      }
+
      return true;
    }
 
    QSqlQuery query;
    if (!query.exec(QStringLiteral("CREATE TABLE %1(projectID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, "
-                                  "network TEXT NOT NULL, activity INTEGER NOT NULL, projectType INTEGER NOT NULL, inclHomePage INTEGER NOT NULL)")
+                                  "network TEXT NOT NULL, activity INTEGER NOT NULL, projectType INTEGER NOT NULL, inclHomePage INTEGER NOT NULL, AA_Type TEXT NOT NULL)")
                                    .arg(PROJECTS_TABLE_NAME)))
    {
       mErrorText = QStringLiteral("Failed to query database: %1").arg(query.lastError().text());
@@ -308,7 +325,7 @@ bool SQLInterface::createDbVersionTable()
    }
 
    // Delete Row
-   query.exec(QStringLiteral("DELETE * FROM %1").arg(DATABASE_VERSION_TABLE_NAME));
+   query.exec(QStringLiteral("DELETE FROM %1").arg(DATABASE_VERSION_TABLE_NAME));
 
    // Insert new Version
    if(!query.exec(QStringLiteral("INSERT INTO  %1(version) VALUES('%2')").arg(DATABASE_VERSION_TABLE_NAME).arg(DB_VERSION)))
@@ -376,46 +393,27 @@ bool SQLInterface::registerProjectWork(int projectID, const QDateTime &startTime
  * @param activity the activity
  * @param projectType the project type (Network or Order)
  * @param includeInHomePage if true. The project is listed on the Home Page
+ * @param aaType the AA_Type
  *
  * @return true on success. False on failure
  */
-bool SQLInterface::addNewProject(const QString &name, const QString &network, int activity, int projectType, bool includeInHomePage)
+bool SQLInterface::addNewProject(const QString &name, const QString &network, int activity, int projectType, bool includeInHomePage, const QString &aaType)
 {
    QSqlQuery query;
 
-   QString str = QStringLiteral("insert into projects(name, network, activity, projectType, inclHomePage) VALUES('%1', '%2', '%3', %4, %5)")
+   QString str = QStringLiteral("insert into projects(name, network, activity, projectType, inclHomePage, AA_Type) VALUES('%1', '%2', '%3', %4, %5, '%6')")
                         .arg(name)
                         .arg(network)
                         .arg(activity)
                         .arg(projectType)
-                        .arg(includeInHomePage);
+                        .arg(includeInHomePage)
+                        .arg(aaType);
 
    bool ok = query.exec(str);
    if (!ok)
    {
       qDebug() << query.lastError();
    }
-
-   /*if(ok)
-   {
-      ok = query.exec("SELECT seq FROM sqlite_sequence where name='projects'");
-      if(ok)
-      {
-         if(query.next())
-         {
-            int projectID = query.value(0).toUInt();
-
-            //if(isDefault)
-            //{
-            //   setDefaultProject(projectID);
-            //}
-         }
-      }
-      else
-      {
-         qDebug() << query.lastError();
-      }
-   }*/
 
    return ok;
 }
@@ -432,16 +430,17 @@ bool SQLInterface::addNewProject(const QString &name, const QString &network, in
  *
  * @return true on success. False on failure
  */
-bool SQLInterface::updateProject(int projectID, const QString &name, const QString &network, int activity, int projectType, bool includeInHomePage)
+bool SQLInterface::updateProject(int projectID, const QString &name, const QString &network, int activity, int projectType, bool includeInHomePage, const QString &aaType)
 {
    QSqlQuery query;
 
-   QString str = QStringLiteral("UPDATE projects SET name='%1', network='%2', activity='%3', projectType=%4, inclHomePage=%5 WHERE projectID=%6")
+   QString str = QStringLiteral("UPDATE projects SET name='%1', network='%2', activity='%3', projectType=%4, inclHomePage=%5, AA_Type='%6' WHERE projectID=%7")
                         .arg(name)
                         .arg(network)
                         .arg(activity)
                         .arg(projectType)
                         .arg((int)includeInHomePage)
+                        .arg(aaType)
                         .arg(projectID);
 
    bool ok = query.exec(str);
@@ -508,6 +507,7 @@ void SQLInterface::fetchProjectList()
       map["Activity"] = query.value(3).toInt();
       map["Type"] = query.value(4).toInt();
       map["IncludeInHomePage"] = query.value(5).toBool();
+      map["AA_Type"] = query.value(6).toString();
       tmpList << map;
 
       mProjectIDCrossRefMap.insert(projectID, projectName);
@@ -558,17 +558,6 @@ void SQLInterface::fetchReport(const QDateTime &fromTimeLocalTime, const QDateTi
 
       DayReport &dayReport = weekReport.getDayReportRef(punchInTimeUTC.date().dayOfWeek()-1);
       dayReport.mTimeRegistrationList << TimeRegistration(projectID, projectName, punchInTimeUTC, punchOutTimeUTC);
-
-      //timeRegistrationList << TimeRegistration(projectID, projectName, punchIn, punchOut);
-
-      /*QVariantMap map;
-      map["Id"] = query.value(0).toInt();
-      map["Name"] = query.value(1).toString();
-      map["NetworkOrOrder"] = query.value(2).toString();
-      map["Activity"] = query.value(3).toString();
-      map["Type"] = query.value(4).toInt();
-      map["IncludeInHomePage"] = query.value(5).toBool();
-      tmpList << map;*/
    }
 
    QString weekTotalSecondsStr = QString::number(weekReport.getWeekTotalHours() / 3600., 'f', 2);
@@ -740,11 +729,11 @@ void SQLInterface::updateTotalTimeWorkedToday()
 
 void SQLInterface::insertTestData()
 {
-   addNewProject("Gjøa Nova", "GM50750000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true);          // 1
-   addNewProject("Gullfaks C", "GM50790000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true);         // 2
-   addNewProject("FCS320 Dev", "48002213", 217, (int)ProjectTypes::ProjectTypesEnum::Network, true);           // 3
-   addNewProject("Oseberg Sør", "GM50560000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true);        // 4
-   addNewProject("Morramøte", "318046", -1, (int)ProjectTypes::ProjectTypesEnum::Order, true);                 // 5
+   addNewProject("Gjøa Nova", "GM50750000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true, "0800");          // 1
+   addNewProject("Gullfaks C", "GM50790000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true, "0800");         // 2
+   addNewProject("FCS320 Dev", "48002213", 217, (int)ProjectTypes::ProjectTypesEnum::Network, true, "0800");           // 3
+   addNewProject("Oseberg Sør", "GM50560000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true, "0800");        // 4
+   addNewProject("Morramøte", "318046", -1, (int)ProjectTypes::ProjectTypesEnum::Order, true, "0800");                 // 5
 
    QDate monday = WeekData::getCurrentWeekStartDate().date();
    QDate tuesday = monday.addDays(1);
