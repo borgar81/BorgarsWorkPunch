@@ -77,14 +77,15 @@ void WeekDatesModel::populateWeekDataVector(int weeksIntoThePast, int weeksIntoT
 {
    QVector <WeekData *> tmpVector;
 
-   QDate tmpDate = WeekData::getCurrentWeekEndDate();
+   QDateTime tmpDate = WeekData::getCurrentWeekEndDate();
 
    for(int i=0; i<weeksIntoThePast; i++)
    {
-      QDate endDate = tmpDate;
+      QDateTime endDate = tmpDate;
       tmpDate = tmpDate.addDays(-6);
-      QDate startDate = tmpDate;
-      int weekNumber = startDate.weekNumber();
+      QDateTime startDate = tmpDate;
+      startDate.setTime(QTime(0, 0, 0));
+      int weekNumber = startDate.date().weekNumber();
 
       WeekData *weekData = new WeekData(weekNumber, startDate, endDate);
       tmpVector.prepend(weekData);
@@ -93,17 +94,18 @@ void WeekDatesModel::populateWeekDataVector(int weeksIntoThePast, int weeksIntoT
 
    tmpDate = WeekData::getCurrentWeekStartDate();
 
-   mCurrentWeekNumber = tmpDate.weekNumber();
+   mCurrentWeekNumber = tmpDate.date().weekNumber();
    emit currentWeekNumberChanged();
 
    tmpDate = tmpDate.addDays(7);
    for(int i=0; i<weeksIntoTheFuture; i++)
    {
-      QDate startDate = tmpDate;
+      QDateTime startDate = tmpDate;
       tmpDate = tmpDate.addDays(6);
-      QDate endDate = tmpDate;
+      QDateTime endDate = tmpDate;
+      endDate.setTime(QTime(23, 59, 59));
 
-      int weekNumber = startDate.weekNumber();
+      int weekNumber = startDate.date().weekNumber();
 
       WeekData *weekData = new WeekData(weekNumber, startDate, endDate);
       tmpVector.append(weekData);
@@ -148,10 +150,10 @@ int WeekDatesModel::getWeekNumber(int row) const
  *
  * @return start date
  */
-QDate WeekDatesModel::getStartDate(int row) const
+QDateTime WeekDatesModel::getStartDate(int row) const
 {
    // TODO Add check?
-   return data(this->index(row), StartDateRole).toDate();
+   return data(this->index(row), StartDateRole).toDateTime();
 }
 
 /**
@@ -161,10 +163,10 @@ QDate WeekDatesModel::getStartDate(int row) const
  *
  * @return end date
  */
-QDate WeekDatesModel::getEndDate(int row) const
+QDateTime WeekDatesModel::getEndDate(int row) const
 {
    // TODO Add check?
-   return data(this->index(row), EndDateRole).toDate();
+   return data(this->index(row), EndDateRole).toDateTime();
 }
 
 

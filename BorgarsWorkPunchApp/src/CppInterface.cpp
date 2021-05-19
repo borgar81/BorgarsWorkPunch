@@ -174,8 +174,9 @@ int CppInterface::getCurrentWeekNumber() const
  */
 QDateTime CppInterface::getStartOfCurrentWeekDate() const
 {
-   QDateTime startOfWeekDateTime(WeekData::getCurrentWeekStartDate(), QTime(0, 0, 0));
-   return startOfWeekDateTime;
+   return WeekData::getCurrentWeekStartDate();
+   //QDateTime startOfWeekDateTime(WeekData::getCurrentWeekStartDate(), QTime(0, 0, 0));
+   //return startOfWeekDateTime;
 }
 
 /**
@@ -183,8 +184,22 @@ QDateTime CppInterface::getStartOfCurrentWeekDate() const
  */
 QDateTime CppInterface::getEndOfCurrentWeekDate() const
 {
-   QDateTime endOfWeekDateTime(WeekData::getCurrentWeekEndDate(), QTime(23, 59, 59));
-   return endOfWeekDateTime;
+   return WeekData::getCurrentWeekEndDate();
+   //QDateTime endOfWeekDateTime(WeekData::getCurrentWeekEndDate(), QTime(23, 59, 59));
+   //return endOfWeekDateTime;
+}
+
+/**
+ * Adds the number of days to the given datetime and returns the results
+ *
+ * @param dateTime the original datetime
+ * @param days the number of days to add (can be negative)
+ *
+ * @return the new date time
+ */
+QDateTime CppInterface::addDaysToDateTime(const QDateTime &dateTime, int days) const
+{
+   return dateTime.addDays(days);
 }
 
 /**

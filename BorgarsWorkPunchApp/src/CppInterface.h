@@ -35,6 +35,7 @@ class CppInterface : public QObject
 
       Q_INVOKABLE QDateTime getStartOfCurrentWeekDate() const;
       Q_INVOKABLE QDateTime getEndOfCurrentWeekDate() const;
+      Q_INVOKABLE QDateTime addDaysToDateTime(const QDateTime &dateTime, int days) const;
 
    public slots:
       void onApplicationStateChanged(Qt::ApplicationState state);

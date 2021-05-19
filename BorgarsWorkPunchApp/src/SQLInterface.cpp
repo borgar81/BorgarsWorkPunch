@@ -746,13 +746,13 @@ void SQLInterface::insertTestData()
    addNewProject("Oseberg Sør", "GM50560000", 110, (int)ProjectTypes::ProjectTypesEnum::Network, true);        // 4
    addNewProject("Morramøte", "318046", -1, (int)ProjectTypes::ProjectTypesEnum::Order, true);                 // 5
 
-   QDate monday = WeekData::getCurrentWeekStartDate();
+   QDate monday = WeekData::getCurrentWeekStartDate().date();
    QDate tuesday = monday.addDays(1);
    QDate wednesday = monday.addDays(2);
    QDate thursday = monday.addDays(3);
    QDate friday = monday.addDays(4);
    QDate saturday = monday.addDays(5);
-   QDate sunday = WeekData::getCurrentWeekEndDate();
+   QDate sunday = WeekData::getCurrentWeekEndDate().date();
 
    // Monday
    registerProjectWork(5, QDateTime(monday, QTime(8, 30, 0)).toUTC(), QDateTime(monday, QTime(9, 0, 0)).toUTC());       // Morramøte

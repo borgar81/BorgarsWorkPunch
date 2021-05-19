@@ -10,21 +10,21 @@ class WeekData
 {
    private:
       int mWeekNumber;
-      QDate mStartDate;
-      QDate mEndDate;
+      QDateTime mStartDate;
+      QDateTime mEndDate;
 
    public:
-      WeekData(int weekNumber, const QDate &startDate, const QDate &endDate);
+      WeekData(int weekNumber, const QDateTime &startDate, const QDateTime &endDate);
 
       QString toString() const;
 
-      static QDate getCurrentWeekStartDate();
-      static QDate getCurrentWeekEndDate();
+      static QDateTime getCurrentWeekStartDate();
+      static QDateTime getCurrentWeekEndDate();
 
       // Get methods
       int getWeekNumber() const { return mWeekNumber; }
-      QDate getStartDate() const { return mStartDate; }
-      QDate getEndDate() const { return mEndDate; }
+      QDateTime getStartDate() const { return mStartDate; }
+      QDateTime getEndDate() const { return mEndDate; }
 };
 
 

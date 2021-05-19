@@ -10,7 +10,7 @@
  * @param startDate the start date of the week
  * @param endDate the end date of the week
  */
-WeekData::WeekData(int weekNumber, const QDate &startDate, const QDate &endDate)
+WeekData::WeekData(int weekNumber, const QDateTime &startDate, const QDateTime &endDate)
 {
    mWeekNumber = weekNumber;
    mStartDate = startDate;
@@ -35,29 +35,31 @@ QString WeekData::toString() const
 /**
  * @return the start date of the current week (Monday)
  */
-QDate WeekData::getCurrentWeekStartDate()
+QDateTime WeekData::getCurrentWeekStartDate()
 {
-   QDate date = QDate::currentDate();
+   QDateTime dateTime = QDateTime::currentDateTime();
+   dateTime.setTime(QTime(0, 0, 0));
 
-   while(date.dayOfWeek() != Qt::Monday)
+   while(dateTime.date().dayOfWeek() != Qt::Monday)
    {
-      date = date.addDays(-1);
+      dateTime = dateTime.addDays(-1);
    }
 
-   return date;
+   return dateTime;
 }
 
 /**
  * @return the end date of the current week (Sunday)
  */
-QDate WeekData::getCurrentWeekEndDate()
+QDateTime WeekData::getCurrentWeekEndDate()
 {
-   QDate date = QDate::currentDate();
+   QDateTime dateTime = QDateTime::currentDateTime();
+   dateTime.setTime(QTime(23, 59, 59));
 
-   while(date.dayOfWeek() != Qt::Sunday)
+   while(dateTime.date().dayOfWeek() != Qt::Sunday)
    {
-      date = date.addDays(1);
+      dateTime = dateTime.addDays(1);
    }
 
-   return date;
+   return dateTime;
 }

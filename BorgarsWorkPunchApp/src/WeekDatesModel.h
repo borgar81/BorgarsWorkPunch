@@ -52,8 +52,8 @@ class WeekDatesModel : public QAbstractListModel
 
       // QML Invokable Methods
       Q_INVOKABLE int getWeekNumber(int row) const;
-      Q_INVOKABLE QDate getStartDate(int row) const;
-      Q_INVOKABLE QDate getEndDate(int row) const;
+      Q_INVOKABLE QDateTime getStartDate(int row) const;
+      Q_INVOKABLE QDateTime getEndDate(int row) const;
       Q_INVOKABLE void refreshWeekData();
 
       Q_INVOKABLE int getIndexOfWeekNumber(int weekNumber);

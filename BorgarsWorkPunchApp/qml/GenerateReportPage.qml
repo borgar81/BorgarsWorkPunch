@@ -37,11 +37,9 @@ Felgo.Page
          icon: Felgo.IconType.arrowleft
          onClicked:
          {
-            root.toDateTime = fromDateTime
-            var tmpDate = new Date(fromDateTime);
-            tmpDate.setDate(fromDateTime.getDate() - 7);
-            root.fromDateTime = tmpDate;
-            sqlInterface.fetchReport(fromDateTime, toDateTime)
+            root.fromDateTime = cppInterface.addDaysToDateTime(root.fromDateTime, -7);
+            root.toDateTime = cppInterface.addDaysToDateTime(root.toDateTime, -7);
+            sqlInterface.fetchReport(fromDateTime, toDateTime);
          }
       }
 
@@ -59,11 +57,9 @@ Felgo.Page
          icon: Felgo.IconType.arrowright
          onClicked:
          {
-            root.fromDateTime = toDateTime
-            var tmpDate = new Date(toDateTime);
-            tmpDate.setDate(toDateTime.getDate() + 7);
-            root.toDateTime = tmpDate;
-            sqlInterface.fetchReport(fromDateTime, toDateTime)
+            root.fromDateTime = cppInterface.addDaysToDateTime(root.fromDateTime, 7);
+            root.toDateTime = cppInterface.addDaysToDateTime(root.toDateTime, 7);
+            sqlInterface.fetchReport(fromDateTime, toDateTime);
          }
       }
    }
@@ -152,6 +148,10 @@ Felgo.Page
       onAccepted:
       {
          periodLabel.text = Qt.formatDate(startDate, "dd.MM.yyyy") + " - " + Qt.formatDate(endDate, "dd.MM.yyyy")
+
+         console.debug("FROM: " + startDate)
+         console.debug("TO  : " + endDate)
+
          sqlInterface.fetchReport(startDate, endDate)
       }
    }
