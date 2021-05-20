@@ -130,9 +130,12 @@ QString WeekReport::generateSapReportString(QMap<int, QVariantMap> projectMap) c
       // PunchIns/PunchOuts
       for (const TimeRegistration &timeRegData : dayReport.mTimeRegistrationList)
       {
-         sapTable[rowIndex][SAPColumns::AA_Type]     = (QStringLiteral("0800") + "\t");     // TODO Add AA_Type as column in Projects table and use that!
-         sapTable[rowIndex][columnIndex]     = (timeRegData.getPunchInTimeUTC().toLocalTime().toString("hh:mm") + "\t");      // From
-         sapTable[rowIndex][columnIndex+1]   = (timeRegData.getPunchOutTimeUTC().toLocalTime().toString("hh:mm") + "\t");     // To
+         QVariantMap projectData = projectMap.value(timeRegData.getProjectID());
+
+
+         sapTable[rowIndex][SAPColumns::AA_Type]   = (projectData["AA_Type"].toString() + "\t");
+         sapTable[rowIndex][columnIndex]           = (timeRegData.getPunchInTimeUTC().toLocalTime().toString("hh:mm") + "\t");      // From
+         sapTable[rowIndex][columnIndex+1]         = (timeRegData.getPunchOutTimeUTC().toLocalTime().toString("hh:mm") + "\t");     // To
          rowIndex++;
       }
       rowIndex = 0;
