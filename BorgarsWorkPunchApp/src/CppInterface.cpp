@@ -74,6 +74,53 @@ bool CppInterface::sendEmailReport()
       mIOSInterface->openNewMailMessage(subject, toList, body, sapString.toUtf8(), "SAP_Format.txt");
 #else
    emit debugMessage("Send-email is not supported on this OS");
+
+   /* ANDROID:
+
+   protected void sendEmail() {
+         Log.i("Send email", "");
+
+         String[] TO = {"someone@gmail.com"};
+         String[] CC = {"xyz@gmail.com"};
+         Intent emailIntent = new Intent(Intent.ACTION_SEND);
+         emailIntent.setData(Uri.parse("mailto:"));
+         emailIntent.setType("text/plain");
+
+
+         emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+         emailIntent.putExtra(Intent.EXTRA_CC, CC);
+         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Your subject");
+         emailIntent.putExtra(Intent.EXTRA_TEXT, "Email message goes here");
+
+         try {
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            finish();
+            Log.i("Finished sending email...", "");
+         } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(MainActivity.this,
+            "There is no email client installed.", Toast.LENGTH_SHORT).show();
+         }
+      }
+
+
+      OR
+
+
+Intent intent=new Intent(Intent.ACTION_SEND);
+String[] recipients={"xyz@gmail.com"};
+intent.putExtra(Intent.EXTRA_EMAIL, recipients);
+intent.putExtra(Intent.EXTRA_SUBJECT,"abc");
+intent.putExtra(Intent.EXTRA_TEXT,"def");
+intent.putExtra(Intent.EXTRA_CC,"ghi");
+intent.setType("text/plain");
+startActivity(Intent.createChooser(intent, "Send mail"));
+
+
+   OR MAYBE THIS URL: https://forum.qt.io/topic/47565/qt-5-x-android-send-e-mail-with-file-attached      (https://code.qt.io/cgit/qt/qtandroidextras.git/tree/examples/androidextras/notification?h=5.15)
+
+
+      */
+
 #endif
    //emit debugMessage(macAddress);
 
