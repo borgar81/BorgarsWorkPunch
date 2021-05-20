@@ -68,13 +68,19 @@ HEADERS += \
    src/WeekReport.h \
    src/WeekReportModel.h
 
-
 android {
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
     OTHER_FILES += android/AndroidManifest.xml       android/build.gradle
 }
 
 ios {
+
+    HEADERS +=  \
+      src/IOSInterface.h
+
+    OBJECTIVE_SOURCES += \
+      src/IOSInterface.mm
+
     QMAKE_INFO_PLIST = ios/Project-Info.plist
     OTHER_FILES += $$QMAKE_INFO_PLIST
 
